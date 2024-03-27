@@ -14,7 +14,6 @@ package edu.ucalgary.oop;
 public class Person {
     private String firstName;
     private String lastName;
-    private String gender;
     private String comments;
     
     /**
@@ -25,11 +24,8 @@ public class Person {
      * @param gender the gender of the person
      * @param comments any additional comments about the person
      */
-    public Person(String firstName, String lastName, String gender, String comments) {
+    public Person(String firstName) {
         this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.comments = comments;
     }
 
     /**
@@ -66,24 +62,6 @@ public class Person {
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    /**
-     * Returns the gender of the person.
-     * 
-     * @return the gender of the person
-     */
-    public String getGender() {
-        return gender;
-    }
-
-    /**
-     * Sets the gender of the person.
-     * 
-     * @param gender the gender of the person
-     */
-    public void setGender(String gender) {
-        this.gender = gender;
     }
 
     /**
