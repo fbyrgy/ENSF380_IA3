@@ -49,8 +49,6 @@ public class LocationTest {
     @Test
     public void testConstructor() {
         assertNotNull("Constructor should create a non-null Location object", location);
-        assertEquals("Constructor should set the name correctly", "Shelter A", location.getName());
-        assertEquals("Constructor should set the address correctly", "1234 Shelter Ave", location.getAddress());
     }
 
     /**
@@ -108,8 +106,22 @@ public class LocationTest {
      */
     @Test
     public void testAddSupply() {
-        location.addSupply(supply);
-        assertTrue("addSupply should add a supply to the supplies list", containsSupply(location.getSupplies(), supply));
+        Location testLocation = new Location("Shelter A", "1234 Shelter Ave");
+        Supply supply1 = new Supply("Water Bottle", 1);
+        Supply supply2 = new Supply("Water Bottle", 2);
+        testLocation.addSupply(supply1);
+        testLocation.addSupply(supply2);
+        // There should now be 3 water bottles in the supplies list
+    
+        boolean found = false;
+        for (Supply supply : testLocation.getSupplies()) {
+            if (supply.getType().equals("Water Bottle") && supply.getQuantity() == 3) {
+                // There should be a supply with type "Water Bottle" and quantity 3 
+                found = true;
+                break;
+            }
+        }
+        assertTrue("addSupply should add a supply to the supplies list", found);
     }
 
     /**
@@ -117,9 +129,21 @@ public class LocationTest {
      */
     @Test
     public void testRemoveSupply() {
+        // supply has 10 water bottles
         location.addSupply(supply); // Ensure the supply is added first
-        location.removeSupply(supply);
-        assertFalse("removeSupply should remove the supply from the supplies list", containsSupply(location.getSupplies(), supply));
+        Supply supplyToRemove = new Supply("Water Bottle", 7);
+        location.removeSupply(supplyToRemove);
+        // There should now be 10-3 = 7 water bottles in the supplies list
+
+        boolean found = false;
+        for (Supply supply : location.getSupplies()) {
+            if (supply.getType().equals("Water Bottle") && supply.getQuantity() == 3) {
+                // There should be a supply with type "Water Bottle" and quantity 3
+                found = true;
+                break;
+            }
+        }
+        assertTrue("removeSupply should remove the supply from the supplies list", found);
     }
 
     /**

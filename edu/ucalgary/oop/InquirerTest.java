@@ -88,20 +88,10 @@ public class InquirerTest {
      * The expected result is that "inquirer.getInteractions()" should return the expected interactions.
      */
     @Test
-    public void testGetInteractions() {
+    public void testAddAndGetInteractions() {
+        inquirer.addInteraction("Found family members");
+        inquirer.addInteraction("Looking for friend");
         assertEquals("getInteractions() should return the inquirer's interactions", expectedInteractions, inquirer.getInteractions());
-    }
-
-    /**
-     * Test case for the setInteractions() method.
-     * It verifies that the "setInteractions()" method updates the interactions correctly.
-     * The expected result is that "setInteractions()" should update the interactions to the new interactions list.
-     */
-    @Test
-    public void testSetInteractions() {
-        ArrayList<String> newInteractions = new ArrayList<>(Arrays.asList("Looking for dog"));
-        inquirer.setInteractions(newInteractions);
-        assertEquals("setInteractions should update interactions", newInteractions, inquirer.getInteractions());
     }
 
 }

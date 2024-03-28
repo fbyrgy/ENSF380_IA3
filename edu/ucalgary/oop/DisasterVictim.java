@@ -29,11 +29,11 @@ public class DisasterVictim extends Person implements Names{
     private final int ASSIGNED_SOCIAL_ID;
     private ArrayList<FamilyRelation> familyConnections = new ArrayList<>();
     private ArrayList<MedicalRecord> medicalRecords = new ArrayList<>();
-    private ArrayList<Supply> personalBelongings;
+    private ArrayList<Supply> personalBelongings = new ArrayList<>();
     private final String ENTRY_DATE;
     private String gender;
     private String comments;
-    private Set<DietaryRestrictions> dietaryRestrictions = new HashSet<>();
+    private ArrayList<DietaryRestrictions> dietaryRestrictions = new ArrayList<>();
     private Location location;
 
 
@@ -71,6 +71,24 @@ public class DisasterVictim extends Person implements Names{
         }
         this.ENTRY_DATE = ENTRY_DATE;
         this.ASSIGNED_SOCIAL_ID = generateSocialID();
+    }
+
+    /**
+     * Constructs a new DisasterVictim object with the given first name and entry date.
+     * @param firstName the first name of the victim
+     * @param ENTRY_DATE the entry date of the victim in the format "YYYY-MM-DD"
+     * @param location the location of the victim
+     * @throws IllegalArgumentException if the entry date has an invalid format
+     */
+    public DisasterVictim(String firstName, String ENTRY_DATE, Location location) {
+        super(firstName); // Add constructor call to the superclass Person with the firstName argument
+        this.firstName = firstName;
+        if (!isValidDateFormat(ENTRY_DATE)) {
+            throw new IllegalArgumentException("Invalid date format for entry date. Expected format: YYYY-MM-DD");
+        }
+        this.ENTRY_DATE = ENTRY_DATE;
+        this.ASSIGNED_SOCIAL_ID = generateSocialID();
+        this.location = location;
     }
 
     private static int generateSocialID() {
@@ -217,32 +235,37 @@ public class DisasterVictim extends Person implements Names{
         }
     }
 
-    /**
-     * Sets the personal belongings of the victim.
-     * @param belongings the personal belongings to set
-     */
-    public void setPersonalBelongings(ArrayList<Supply> belongings) {
-        this.personalBelongings = belongings;
-    }
-
 
     /**
      * Adds a personal belonging to the disaster victim's personal belongings list.
-     * The personal belonging can only be added if the location is set and the supply is available at the location.
+     * The personal belonging can only be added if the location is set, the supply is available at the location,
+     * and there is enough quantity of the supply.
      *
      * @param supply the supply to be added as a personal belonging
+     * @param quantity the quantity of the supply to add
      * @throws IllegalStateException if the location is not set
-     * @throws IllegalArgumentException if the supply is not available at the location
+     * @throws IllegalArgumentException if the supply is not available at the location or there is not enough quantity
      */
     public void addPersonalBelonging(Supply supply) {
         if (location == null) {
             throw new IllegalStateException("Location must be set before adding personal belongings");
         }
-        if (location.getSupplies().contains(supply)) {
-            personalBelongings.add(supply);
-            location.getSupplies().remove(supply); // Removing the supply from location
-        } else {
-            throw new IllegalArgumentException("Supply must be available at the location before adding it to personal belongings");
+        boolean supplyAvailable = false;
+        for (Supply locationSupply : location.getSupplies()) {
+            if (locationSupply.getType().equals(supply.getType())) {
+                supplyAvailable = true;
+                int quantity = supply.getQuantity();
+                if (locationSupply.getQuantity() >= quantity) {
+                    personalBelongings.add(supply);
+                    locationSupply.setQuantity(locationSupply.getQuantity() - quantity); // Removing the quantity from location
+                    break;
+                } else {
+                    throw new IllegalArgumentException("Not enough quantity of the supply available at the location");
+                }
+            }
+        }
+        if (!supplyAvailable) {
+            throw new IllegalArgumentException("Supply is not available at the location");
         }
     }
 
@@ -253,8 +276,15 @@ public class DisasterVictim extends Person implements Names{
     public void removePersonalBelonging(Supply unwantedSupply) {
         ArrayList<Supply> updatedBelongings = new ArrayList<>();
         for (Supply supply : personalBelongings) {
-            if (!supply.equals(unwantedSupply)) {
+            if (!supply.getType().equals(unwantedSupply.getType())) {
                 updatedBelongings.add(supply);
+            }
+            else {
+                if(supply.getQuantity() > unwantedSupply.getQuantity()) {
+                    // The case where there is still supply left for the DisasterVictim
+                    supply.setQuantity(supply.getQuantity() - unwantedSupply.getQuantity());
+                    updatedBelongings.add(supply);
+                }
             }
         }
         personalBelongings = updatedBelongings;
@@ -332,7 +362,7 @@ public class DisasterVictim extends Person implements Names{
      * Returns the dietary restrictions of the victim.
      * @return a set of DietaryRestrictions
      */
-    public Set<DietaryRestrictions> getDietaryRestrictions() {
+    public ArrayList<DietaryRestrictions> getDietaryRestrictions() {
         return dietaryRestrictions;
     }
 

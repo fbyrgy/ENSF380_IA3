@@ -10,9 +10,7 @@ package edu.ucalgary.oop;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
-import edu.ucalgary.oop.DisasterVictim;
-
+import java.util.ArrayList;
 
 public class ReliefService {
     private Inquirer inquirer;
@@ -20,6 +18,7 @@ public class ReliefService {
     private String dateOfInquiry;
     private String infoProvided;
     private Location lastKnownLocation;
+    private ArrayList<Inquirer> inquirerList = new ArrayList<>();
 
     /**
      * Constructs a ReliefService object with the specified parameters.
@@ -37,6 +36,7 @@ public class ReliefService {
         setDateOfInquiry(dateOfInquiry);
         this.infoProvided = infoProvided;
         this.lastKnownLocation = lastKnownLocation;
+        inquirerList.add(inquirer);
     }
 
     /**
@@ -50,11 +50,17 @@ public class ReliefService {
 
     /**
      * Sets the inquirer associated with the relief service.
+     * If the inquirer is already in the inquirerList, it sets it to that inquirer.
      * 
      * @param inquirer the inquirer to be set
      */
     public void setInquirer(Inquirer inquirer) {
-        this.inquirer = inquirer;
+        if (inquirerList.contains(inquirer)) {
+            this.inquirer = inquirer;
+        } else {
+            inquirerList.add(inquirer);
+            this.inquirer = inquirer;
+        }
     }
 
     /**
@@ -158,5 +164,25 @@ public class ReliefService {
         return "Inquirer: " + inquirer.getFirstName() + ", Missing Person: " + missingPerson.getFirstName()
                 + ", Date of Inquiry: " + dateOfInquiry + ", Info Provided: " + infoProvided + ", Last Known Location: "
                 + lastKnownLocation.getName();
+    }
+
+    /**
+     * Returns a list of inquirers associated with the relief service.
+     * 
+     * @return a list of inquirers associated with the relief service
+     */
+    public ArrayList<Inquirer> getInquirerList() {
+        return inquirerList;
+    
+    }
+
+    /**
+     * Checks if the specified inquirer exists in the inquirer list.
+     * 
+     * @param inquirer the inquirer to check
+     * @return true if the inquirer exists in the list, false otherwise
+     */
+    public boolean inquirerExists(Inquirer inquirer) {
+        return inquirerList.contains(inquirer);
     }
 }

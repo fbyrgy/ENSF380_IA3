@@ -8,13 +8,14 @@
  */
 
  package edu.ucalgary.oop;
-
+import java.util.ArrayList;
 
 public class Inquirer {
     private final String FIRST_NAME;
     private final String LAST_NAME;
     private final String INFO;
     private final String SERVICES_PHONE;
+    private ArrayList<String> interactions = new ArrayList<>();
 
     /**
      * Constructs a new Inquirer object with the specified information.
@@ -29,6 +30,7 @@ public class Inquirer {
         this.LAST_NAME = lastName;
         this.SERVICES_PHONE = phone;
         this.INFO = info;
+        
     }
 
     /**
@@ -58,4 +60,20 @@ public class Inquirer {
      * @return additional information about the inquirer
      */
     public String getInfo() { return this.INFO; }
+
+    /**
+     * Returns a list of interactions with the inquirer.
+     *
+     * @return a list of interactions with the inquirer
+     */
+    public ArrayList<String> getInteractions() { return this.interactions; }
+
+    /**
+     * Adds an interaction to the list of interactions with the inquirer.
+     *
+     * @param interaction the interaction to add
+     */
+    public void addInteraction(String interaction) {
+        this.interactions.add(interaction);
+    }
 }

@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class Location {
     private String name;
     private String address;
-    private ArrayList<DisasterVictim> occupants = new ArrayList<>(); // Initialized
-    private ArrayList<Supply> supplies = new ArrayList<>(); // Initialized
+    private ArrayList<DisasterVictim> occupants = new ArrayList<>(); 
+    private ArrayList<Supply> supplies = new ArrayList<>(); 
 
     /**
      * Constructs a Location object with the specified name and address.
@@ -88,7 +88,7 @@ public class Location {
      * @return a copy of the supplies list
      */
     public ArrayList<Supply> getSupplies() {
-        return new ArrayList<>(supplies);
+        return supplies;
     }
 
     /**
@@ -124,7 +124,17 @@ public class Location {
      * @param supply the supply to be added
      */
     public void addSupply(Supply supply) {
-        supplies.add(supply);
+        boolean found = false;
+        for (Supply s : supplies) {
+            if (s.getType() == supply.getType()) {
+                s.setQuantity(s.getQuantity() + supply.getQuantity());
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            supplies.add(supply);
+        }
     }
 
     /**
@@ -132,7 +142,16 @@ public class Location {
      *
      * @param supply the supply to be removed
      */
-    public void removeSupply(Supply supply) {
-        supplies.remove(supply);
+    public void removeSupply(Supply unwantedSupply) {
+        for (Supply s : supplies) {
+            if (s.getType() == unwantedSupply.getType()) {
+                s.setQuantity(s.getQuantity() - unwantedSupply.getQuantity());
+                if (s.getQuantity() <= 0) {
+                    supplies.remove(s);
+                }
+                break;
+            }
+        }
+
     }
 }

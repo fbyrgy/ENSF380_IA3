@@ -18,24 +18,23 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
 /**
  * This class contains unit tests for the DisasterVictim class.
  */
 public class DisasterVictimTest {
     private DisasterVictim victim;
-    private ArrayList<Supply> suppliesToSet;
+    private Location location;
     private String expectedFirstName = "Freda";
     private String EXPECTED_ENTRY_DATE = "2024-01-18";
     private String invalidDate = "15/13/2024";
     private String expectedComments = "Needs medical attention and speaks 2 languages";
-    private DietaryRestrictions expectedDietaryRestrictions = DietaryRestrictions.VGML;
+
 
     @Before
     public void setUp() {
         victim = new DisasterVictim(expectedFirstName, EXPECTED_ENTRY_DATE);
-        suppliesToSet = new ArrayList<>();
-        suppliesToSet.add(new Supply("Water Bottle", 10));
-        suppliesToSet.add(new Supply("Blanket", 5));
+        location = new Location("building 123", "123 Main St");
 
     }
 
@@ -48,6 +47,15 @@ public class DisasterVictimTest {
         DisasterVictim victim = new DisasterVictim("Freda", validEntryDate);
         assertNotNull("Constructor should successfully create an instance with a valid entry date", victim);
         assertEquals("Constructor should set the entry date correctly", validEntryDate, victim.getEntryDate());
+    }
+
+    /**
+     * Test the constructor with location argument 
+     */
+    @Test
+    public void testObjectCreation() {
+        DisasterVictim testVictim = new DisasterVictim("Freda", "2024-01-18", location);
+        assertNotNull(testVictim);
     }
 
     /**
@@ -149,7 +157,7 @@ public class DisasterVictimTest {
      */
     @Test
     public void testSetAndGetGender() {
-        String newGender = "male";
+        String newGender = "man";
         victim.setGender(newGender);
         assertEquals("setGender should update and getGender should return the new gender", newGender.toLowerCase(),
                 victim.getGender());
@@ -189,19 +197,56 @@ public class DisasterVictimTest {
      * Test case for the addPersonalBelonging method.
      */
     @Test
-    public void testAddPersonalBelonging() {
-        Supply newSupply = new Supply("Emergency Kit", 1);
-        victim.addPersonalBelonging(newSupply);
-        ArrayList<Supply> testSupplies = victim.getPersonalBelongings();
-        boolean correct = false;
+    public void testAddAndGetPersonalBelonging() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
+        Supply newSupply = new Supply("Emergency Kit", 5);
+        Supply newSupply2 = new Supply("Emergency Kit", 1);
+        location.addSupply(newSupply);
+        testVictim.addPersonalBelonging(newSupply2);
+        
+        assertTrue("addPersonalBelonging should add the supply to personal belongings", testVictim.getPersonalBelongings().contains(newSupply2));
+    }
 
-        for (Supply supply : testSupplies) {
-            if (supply == newSupply) {
-                correct = true;
+    /**
+     * Testing for addPersonalBelonging should remove the supply from location
+     */
+    @Test
+    public void testAddPersonalBelongingRemoveSupply() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
+        Supply newSupply = new Supply("Emergency Kit", 5);
+        Supply newSupply2 = new Supply("Emergency Kit", 1);
+        location.addSupply(newSupply);
+        testVictim.addPersonalBelonging(newSupply2);
+        // There should be 5-1 = 4 supplies left
+
+        boolean found = false;
+        for (Supply supply : location.getSupplies()) {
+            if (supply.getType().equals("Emergency Kit") && supply.getQuantity() == 4) {
+                // There should be a supply with type "Emergency Kit" and quantity 4
+                found = true;
+                break;
             }
         }
-        assertTrue("addPersonalBelonging should add the supply to personal belongings", correct);
+        assertTrue("removeSupply should remove the supply from the supplies list", found);
     }
+
+
+    /**
+     * Test case for the removePersonalBelonging method.
+     */
+    @Test
+    public void testRemovePersonalBelonging() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
+        Supply newSupply = new Supply("Emergency Kit", 1);
+        location.addSupply(newSupply);
+        testVictim.addPersonalBelonging(newSupply);
+
+        testVictim.removePersonalBelonging(newSupply);
+
+        assertFalse("removePersonalBelonging should remove the supply from personal belongings", testVictim.getPersonalBelongings().contains(newSupply));
+    }
+
+
 
     /**
      * Test case for the removeFamilyConnection method.
@@ -235,26 +280,6 @@ public class DisasterVictimTest {
         assertTrue("removeFamilyConnection should remove the family member", correct);
     }
 
-    /**
-     * Test case for the removePersonalBelonging method.
-     */
-    @Test
-    public void testRemovePersonalBelonging() {
-
-        Supply supplyToRemove = suppliesToSet.get(0);
-        victim.addPersonalBelonging(supplyToRemove);
-        victim.removePersonalBelonging(supplyToRemove);
-
-        ArrayList<Supply> testSupplies = victim.getPersonalBelongings();
-        boolean correct = true;
-
-        for (Supply supply : testSupplies) {
-            if (supply.equals(supplyToRemove)) {
-                correct = false;
-            }
-        }
-        assertTrue("removePersonalBelonging should remove the supply from personal belongings", correct);
-    }
 
     /**
      * Test case for the setFamilyConnection method.
@@ -313,47 +338,21 @@ public class DisasterVictimTest {
         assertTrue("setMedicalRecords should correctly update medical records", correct);
     }
 
-    /**
-     * Test case for the setPersonalBelongings method.
-     */
-    @Test
-    public void testSetPersonalBelongings() {
-        Supply one = new Supply("Tent", 1);
-        Supply two = new Supply("Jug", 3);
-        ArrayList<Supply> newSupplies = new ArrayList<>(Arrays.asList(one, two)); 
-        boolean correct = true;
-
-        victim.setPersonalBelongings(newSupplies);
-        ArrayList<Supply> actualSupplies = victim.getPersonalBelongings();
-
-
-        if (newSupplies.size() != actualSupplies.size()) { 
-            correct = false;
-        } else {
-
-            for (Supply actualSupply : actualSupplies) {
-                boolean found = false;
-                for (Supply newSupply : newSupplies) {
-                    if (actualSupply.equals(newSupply)) {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    correct = false;
-                    break;
-                }
-            }
-        }
-        assertTrue("setPersonalBelongings should correctly update personal belongings", correct);
-    }
 
     /**
-     * Test case for the setDietaryRestrictions and getDietaryRestrictions methods.
+     * Test case for the addDietaryRestrictions and getDietaryRestrictions methods.
      */
     @Test
-    public void testSetAndGetDietaryRestrictions() {
-        victim.addDietaryRestriction(expectedDietaryRestrictions);
+    public void testAddAndGetDietaryRestrictions() {
+        // Getting the expected results
+        ArrayList<DietaryRestrictions> expectedDietaryRestrictions = new ArrayList<>();
+        expectedDietaryRestrictions.add(DietaryRestrictions.VGML);
+        expectedDietaryRestrictions.add(DietaryRestrictions.KSML);
+
+        // Using the DisasterVictim methods
+        victim.addDietaryRestriction(DietaryRestrictions.VGML);
+        victim.addDietaryRestriction(DietaryRestrictions.KSML);
+
         assertEquals(
                 "setDietaryRestrictions should update and getDietaryRestrictions should return the new dietary restrictions",
                 expectedDietaryRestrictions, victim.getDietaryRestrictions());
@@ -421,7 +420,6 @@ public class DisasterVictimTest {
     @Test
     public void testGetAndSetLocation() {
         DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18");
-        Location location = new Location("building 123", "123 Main St");
         
         // Set the location
         testVictim.setLocation(location);
@@ -445,12 +443,24 @@ public class DisasterVictimTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testAddPersonalBelongingSupplyNotFound() {
-        Location location = new Location("building 123", "123 Main St");
-        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18");
-        testVictim.setLocation(location);
+
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
         Supply supply = new Supply("Blanket", 5);
-        victim.addPersonalBelonging(supply);
+        testVictim.addPersonalBelonging(supply);
         // Expecting IllegalArgumentException due to supply not found at location
+    }
+
+    /**
+     * Test case for addPPersonalBelonging with not enough supply.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPersonalBelongingNotEnoughSupply() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
+        Supply supply = new Supply("Water Bottle", 1);
+        location.addSupply(supply);
+        Supply supply2 = new Supply("Water Bottle", 10);
+        testVictim.addPersonalBelonging(supply2);
+        // Expecting IllegalArgumentException due to not enough supply
     }
 
 }

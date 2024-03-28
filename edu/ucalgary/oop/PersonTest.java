@@ -17,12 +17,8 @@ import static org.junit.Assert.*;
  * This class contains unit tests for the Person class.
  */
 public class PersonTest {
-    private String expectedFirstName = "John";
-    private String expectedLastName = "Doe";
-    private String expectedGender = "Male";
-    private String expectedComments = "Regular Civilian";
 
-    Person person = new Person("John","Doe","Male","Regular Civilian");
+    Person person = new Person("John");
 
     /**
      * Test case for object creation.
@@ -34,81 +30,37 @@ public class PersonTest {
     }
 
     /**
-     * Test case for getFirstName method.
-     * Ensures that the getFirstName method returns the correct first name.
+     * Test case for getFirstName and setFirstName methods.
+     * Ensures that the getFirstName method returns the correct first name
+     * and that the setFirstName method changes the first name correctly.
      */
     @Test
-    public void testGetFirstName() {
-        assertEquals("getFirstName should return the correct first name", expectedFirstName, person.getFirstName());
-    }
-
-    /**
-     * Test case for getLastName method.
-     * Ensures that the getLastName method returns the correct last name.
-     */
-    @Test
-    public void testGetLastName() {
-        assertEquals("getLastName should return the correct last name", expectedLastName, person.getLastName());
-    }
-
-    /**
-     * Test case for getComments method.
-     * Ensures that the getComments method returns the correct comments.
-     */
-    @Test
-    public void testGetComments() {
-        assertEquals("getComments should return the correct comments", expectedComments, person.getComments());
-    }
-
-    /**
-     * Test case for getGender method.
-     * Ensures that the getGender method returns the correct gender.
-     */
-    @Test
-    public void testGetGender() {
-        assertEquals("getGender should return the correct gender", expectedGender, person.getGender());
-    }
-
-    /**
-     * Test case for setFirstName method.
-     * Ensures that the setFirstName method changes the first name correctly.
-     */
-    @Test
-    public void testSetFirstName() {
+    public void testSetAndGetFirstName() {
         String newExpectedFirstName = "Jane";
         person.setFirstName(newExpectedFirstName);
         assertEquals("setFirstName should change firstName", newExpectedFirstName, person.getFirstName());
     }
 
     /**
-     * Test case for setLastName method.
-     * Ensures that the setLastName method changes the last name correctly.
+     * Test case for getLastName and setLastName methods.
+     * Ensures that the getLastName method returns the correct last name
+     * and that the setLastName method changes the last name correctly.
      */
     @Test
-    public void testSetLastName() {
-        String newExpectedLastName = "Miller";
-        person.setLastName(newExpectedLastName);
-        assertEquals("setLastName should change lastName", newExpectedLastName, person.getLastName());
+    public void testSetAndGetLastName() {
+        String expectedLastName = "Doe";
+        person.setLastName(expectedLastName);
+        assertEquals("getLastName should return the correct last name", expectedLastName, person.getLastName());
     }
 
     /**
-     * Test case for setGender method.
-     * Ensures that the setGender method changes the gender correctly.
+     * Test case for getComments and setComments methods.
+     * Ensures that the getComments method returns the correct comments
+     * and that the setComments method changes the comments correctly.
      */
     @Test
-    public void testSetGender() {
-        String newExpectedGender = "Female";
-        person.setGender(newExpectedGender);
-        assertEquals("setGender should change gender", newExpectedGender, person.getGender());
-    }
-
-    /**
-     * Test case for setComments method.
-     * Ensures that the setComments method changes the comments correctly.
-     */
-    @Test
-    public void testSetComments() {
-        String newExpectedComments = "Special Agent";
+    public void testSetAndGetComments() {
+        String newExpectedComments = "New comments";
         person.setComments(newExpectedComments);
         assertEquals("setComments should change comments", newExpectedComments, person.getComments());
     }

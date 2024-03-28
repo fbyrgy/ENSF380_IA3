@@ -98,42 +98,16 @@ public class MedicalRecordTest {
     /**
      * Testing setDateOfTreatment with invalid format. Should throw IllegalArgumentException
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testSetDateOfBirthWithInvalidFormat() {
-        boolean correctValue = false;
-        String failureReason = "no exception was thrown";
-
-        try {
-            medicalRecord.setDateOfTreatment(inValidDateOfTreatment); // Should throw IllegalArgumentException
-        } catch (IllegalArgumentException e) {
-            correctValue = true;
-        } catch (Exception e) {
-            failureReason = "the wrong type of exception was thrown";
-        }
-
-        String message = "setDateOfTreatment() should throw an IllegalArgumentException with invalid date format '"
-                + inValidDateOfTreatment + "' but " + failureReason + ".";
-        assertTrue(message, correctValue);
+        medicalRecord.setDateOfTreatment(inValidDateOfTreatment);
     }
 
     /**
      * Testing setDateOfBirth with invalid date
      */
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testSetDateOfBirthWithNotADate() {
-        boolean correctValue = false;
-        String failureReason = "no exception was thrown";
-
-        try {
-            medicalRecord.setDateOfTreatment(expectedTreatmentDetails); // Should throw IllegalArgumentException
-        } catch (IllegalArgumentException e) {
-            correctValue = true;
-        } catch (Exception e) {
-            failureReason = "the wrong type of exception was thrown";
-        }
-
-        String message = "setDateOfTreatment() should throw an IllegalArgumentException with invalid non-date input '"
-                + inValidDateOfTreatment + "' but " + failureReason + ".";
-        assertTrue(message, correctValue);
+        medicalRecord.setDateOfTreatment(expectedTreatmentDetails);
     }
 }

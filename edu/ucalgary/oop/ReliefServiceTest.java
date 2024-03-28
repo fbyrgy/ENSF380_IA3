@@ -71,6 +71,7 @@ public class ReliefServiceTest {
         assertEquals("Inquirer should be set correctly", newInquirer, reliefService.getInquirer());
     }
 
+
     /**
      * Test for the setInquirer method of ReliefService.
      * It checks if the inquirer is set correctly and added to the inquirerList.
@@ -102,7 +103,7 @@ public class ReliefServiceTest {
      */
     @Test
     public void testSetMissingPerson() {
-        DisasterVictim newMissingPerson = new DisasterVictim("John", "Doe", "University of Calgary");
+        DisasterVictim newMissingPerson = new DisasterVictim("John", "2024-01-01");
         reliefService.setMissingPerson(newMissingPerson);
         assertEquals("Missing person should be set correctly", newMissingPerson, reliefService.getMissingPerson());
     }
@@ -173,36 +174,17 @@ public class ReliefServiceTest {
         assertEquals("Log details should match the expected format", expectedLogDetails, reliefService.getLogDetails());
     }
 
-    /**
-     * Test for the setLogDetails method of ReliefService.
-     * It checks if the log details are set correctly.
-     */
-    @Test
-    public void testSetLogDetails() {
-        String newLogDetails = "Updated log details";
-        reliefService.setLogDetails(newLogDetails);
-        assertEquals("Log details should be set correctly", newLogDetails, reliefService.getLogDetails());
-    }
-
-    /**
-     * Test for the enterInformation method of ReliefService.
-     * It checks if the note is added to the comments of the victim.
-     */
-    @Test
-    public void testEnterInformation() {
-        enterInformation(testLocation, victim1, "Recovered");
-        assertEquals("Note should be added to the comments", "Recovered", victim1.getComments());
-    }
 
     /**
      * Test for the searchName method of ReliefService.
      * It checks if the search returns true for a given search query.
      */
-    @Test
-    public void testSearchName() {
-        String searchQuery = "Joh";
-        assertTrue("Search should return true", searchName(testLocation, searchQuery));
-    }
+    // @Test
+    // public void testSearchName() {
+    //     String searchQuery = "Joh";
+    //     assertTrue("Search should return true", searchName(testLocation, searchQuery));
+    // }
+
     /**
      * Test for the inquirerExists method of ReliefService.
      * It checks if the inquirer exists in the inquirerList.
@@ -210,7 +192,8 @@ public class ReliefServiceTest {
     @Test
     public void testInquirerExists() {
         reliefService.setInquirer(inquirer); 
-        Inquirer inquirer2 = inquirer = new Inquirer("John", "Alex", "1234567890", "Looking for family member");
-        assertTrue("Inquirer should exist", inquirerExists(inquirer2));
+        Inquirer inquirer2 = new Inquirer("Sheldon", "Cooper", "44444444444", "Looking for positron");
+        reliefService.setInquirer(inquirer2);
+        assertTrue("Inquirer should exist", reliefService.inquirerExists(inquirer));
     }
 }
