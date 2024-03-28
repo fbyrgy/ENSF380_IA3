@@ -13,7 +13,6 @@ package edu.ucalgary.oop;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -25,12 +24,9 @@ import java.util.Arrays;
 public class DisasterVictimTest {
     private DisasterVictim victim;
     private ArrayList<Supply> suppliesToSet;
-    private ArrayList<FamilyRelation> familyRelations;
     private String expectedFirstName = "Freda";
     private String EXPECTED_ENTRY_DATE = "2024-01-18";
-    private String validDate = "2024-01-15";
     private String invalidDate = "15/13/2024";
-    private String expectedGender = "female";
     private String expectedComments = "Needs medical attention and speaks 2 languages";
     private DietaryRestrictions expectedDietaryRestrictions = DietaryRestrictions.VGML;
 
@@ -157,6 +153,15 @@ public class DisasterVictimTest {
         victim.setGender(newGender);
         assertEquals("setGender should update and getGender should return the new gender", newGender.toLowerCase(),
                 victim.getGender());
+    }
+
+    /**
+     * Test case for the setGender method with an invalid gender.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetGenderWithInvalidGender() {
+        String invalidGender = "pineapple";
+        victim.setGender(invalidGender);
     }
 
     /**
@@ -325,7 +330,7 @@ public class DisasterVictimTest {
         if (newSupplies.size() != actualSupplies.size()) { 
             correct = false;
         } else {
-            int i;
+
             for (Supply actualSupply : actualSupplies) {
                 boolean found = false;
                 for (Supply newSupply : newSupplies) {
@@ -360,7 +365,7 @@ public class DisasterVictimTest {
     @Test(expected = IllegalStateException.class)
     public void testSetAgeWithDateOfBirthSet() {
         victim.setDateOfBirth("1987-05-21");
-        victim.setAge(34);
+        victim.setApproximateAge(34);
         // Expecting IllegalStateException due to date of birth already set
     }
 
@@ -409,4 +414,43 @@ public class DisasterVictimTest {
         String fileName = "GenderOptions.txt";
         assertTrue("Should be able to connect to the file", Files.exists(Paths.get(fileName)));
     }
+
+    /**
+     * Test case for the getLocation and setLocation methods.
+     */
+    @Test
+    public void testGetAndSetLocation() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18");
+        Location location = new Location("building 123", "123 Main St");
+        
+        // Set the location
+        testVictim.setLocation(location);
+        
+        // Get the location and assert that it matches the expected location
+        assertEquals("getLocation should return the correct location", location, testVictim.getLocation());
+    }
+
+    /**
+     * Test case for addPersonalBelonging with no location set.
+     */
+    @Test(expected = IllegalStateException.class)
+    public void testAddPersonalBelongingNoLocation() {
+        Supply supply = new Supply("Water Bottle", 10);
+        victim.addPersonalBelonging(supply);
+        // Expecting IllegalStateException due to no location set
+    }
+
+    /**
+     * Test case for addPersonalBelonging with supply not found at location.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testAddPersonalBelongingSupplyNotFound() {
+        Location location = new Location("building 123", "123 Main St");
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18");
+        testVictim.setLocation(location);
+        Supply supply = new Supply("Blanket", 5);
+        victim.addPersonalBelonging(supply);
+        // Expecting IllegalArgumentException due to supply not found at location
+    }
+
 }

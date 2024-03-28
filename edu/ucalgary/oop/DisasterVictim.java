@@ -9,10 +9,7 @@
 
 package edu.ucalgary.oop;
 
-import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
-import java.time.LocalDate;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -37,6 +34,7 @@ public class DisasterVictim extends Person implements Names{
     private String gender;
     private String comments;
     private Set<DietaryRestrictions> dietaryRestrictions = new HashSet<>();
+    private Location location;
 
 
     /**
@@ -227,26 +225,25 @@ public class DisasterVictim extends Person implements Names{
         this.personalBelongings = belongings;
     }
 
+
     /**
-     * Adds a supply to the personal belongings of the victim.
-     * @param supply the supply to add
+     * Adds a personal belonging to the disaster victim's personal belongings list.
+     * The personal belonging can only be added if the location is set and the supply is available at the location.
+     *
+     * @param supply the supply to be added as a personal belonging
+     * @throws IllegalStateException if the location is not set
+     * @throws IllegalArgumentException if the supply is not available at the location
      */
     public void addPersonalBelonging(Supply supply) {
-        if (this.personalBelongings == null) {
-            ArrayList<Supply> tmpSupply = new ArrayList<>();
-            tmpSupply.add(supply);
-            this.setPersonalBelongings(tmpSupply);
-            return;
+        if (location == null) {
+            throw new IllegalStateException("Location must be set before adding personal belongings");
         }
-
-        // Create a new ArrayList with the contents of the current personalBelongings
-        ArrayList<Supply> tmpPersonalBelongings = new ArrayList<>(this.personalBelongings);
-
-        // Add the new element to the new ArrayList
-        tmpPersonalBelongings.add(supply);
-
-        // Replace the original personalBelongings with the new ArrayList
-        this.setPersonalBelongings(tmpPersonalBelongings);
+        if (location.getSupplies().contains(supply)) {
+            personalBelongings.add(supply);
+            location.getSupplies().remove(supply); // Removing the supply from location
+        } else {
+            throw new IllegalArgumentException("Supply must be available at the location before adding it to personal belongings");
+        }
     }
 
     /**
@@ -353,6 +350,24 @@ public class DisasterVictim extends Person implements Names{
      */
     public void removeDietaryRestriction(DietaryRestrictions restriction) {
         this.dietaryRestrictions.remove(restriction);
+    }
+
+    /**
+     * Sets the location of the disaster victim.
+     * 
+     * @param location the location to set
+     */
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    /**
+     * Returns the location of the disaster victim.
+     * 
+     * @return the location
+     */
+    public Location getLocation() {
+        return location;
     }
 }
 
