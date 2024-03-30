@@ -20,7 +20,7 @@ import java.util.Set;
  * Represents a victim of a disaster.
  */
 public class DisasterVictim extends Person implements Names{
-    private static int counter = 0;
+    private static int counter = 0; 
 
     private String firstName;
     private String lastName;
@@ -89,19 +89,30 @@ public class DisasterVictim extends Person implements Names{
         this.ENTRY_DATE = ENTRY_DATE;
         this.ASSIGNED_SOCIAL_ID = generateSocialID();
         this.location = location;
+        location.addOccupant(this); // Add the DisasterVictim to the location's occupants
     }
 
+    /**
+     * Generates a unique social ID for a disaster victim.
+     * 
+     * @return the generated social ID
+     */
     private static int generateSocialID() {
         counter++;
         return counter;
     }
 
+    /**
+     * Checks if the given date string is in a valid date format (yyyy-MM-dd).
+     *
+     * @param date the date string to be validated
+     * @return true if the date string is in a valid format, false otherwise
+     */
     private static boolean isValidDateFormat(String date) {
         String dateFormatPattern = "^\\d{4}-\\d{2}-\\d{2}$";
         return date.matches(dateFormatPattern);
     }
 
-    // Getters and setters
 
     /**
      * Returns the first name of the victim.

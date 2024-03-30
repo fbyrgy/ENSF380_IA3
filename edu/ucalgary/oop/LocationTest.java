@@ -156,4 +156,54 @@ public class LocationTest {
         location.setSupplies(newSupplies);
         assertTrue("setSupplies should replace the supplies list with the new list", containsSupply(location.getSupplies(), supply));
     }
+
+    /**
+     * Test case for the getLocationID method.
+     * 
+     * This test creates two Location objects and checks if the IDs are sequential.
+     * The first location ID should be 1 less than the second location ID.
+     */
+    @Test
+    public void testGetLocationID() {
+        // Create two Location objects
+        Location location1 = new Location("Location1", "Address1");
+        Location location2 = new Location("Location2", "Address2");
+    
+        // Check if the IDs are sequential. 
+        assertEquals("First location ID should be 1", location2.getLocationID(), location1.getLocationID() + 1);
+    }
+
+    /**
+     * Test case for the getDisasterVictimFromID method in the Location class.
+     * 
+     * This test verifies that the getDisasterVictimFromID method returns the correct DisasterVictim object
+     * when given a valid ID.
+     */
+    @Test
+    public void testGetDisasterVictimFromId() {
+    
+        location.addOccupant(victim);
+        System.out.println(victim.getAssignedSocialID());
+        assertEquals("getDisasterVictimFromId should return the correct DisasterVictim object", victim, location.getDisasterVictimFromID(victim.getAssignedSocialID()));
+    }
+    
+    /**
+     * Test case to verify that the getDisasterVictimFromID method throws an IllegalArgumentException
+     * when an invalid social ID is provided.
+     *
+     * This test creates a Location object and attempts to retrieve a DisasterVictim using an invalid social ID.
+     * Since no DisasterVictim has been added to the Location, any social ID will be considered invalid.
+     * The test expects an IllegalArgumentException to be thrown.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetDisasterVictimFromIdInvalid() {
+        // Create a Location
+        Location location1 = new Location("Location1", "Address1");
+    
+        // Check that getDisasterVictimFromID throws an IllegalArgumentException for an invalid social ID
+        // Since no DisasterVictim has been added to the Location, any socialID will be invalid
+        location1.getDisasterVictimFromID(99999);
+    }
+
 }
+

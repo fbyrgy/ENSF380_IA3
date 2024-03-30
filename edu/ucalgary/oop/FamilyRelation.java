@@ -29,6 +29,8 @@ public class FamilyRelation {
         this.personOne = personOne;
         this.relationshipTo = relationshipTo;
         this.personTwo = personTwo;
+        personOne.addFamilyConnection(this);
+        personTwo.addFamilyConnection(this);
     }
 
     /**

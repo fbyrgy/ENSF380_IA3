@@ -34,6 +34,20 @@ public class Inquirer {
     }
 
     /**
+     * Constructs a new Inquirer object with the specified information.
+     *
+     * @param firstName the first name of the inquirer
+     * @param lastName the last name of the inquirer
+     * @param phone the phone number of the inquirer
+     */
+    public Inquirer(String firstName, String lastName, String phone) {
+        this.FIRST_NAME = firstName;
+        this.LAST_NAME = lastName;
+        this.SERVICES_PHONE = phone;
+        this.INFO = "";
+    }
+
+    /**
      * Returns the first name of the inquirer.
      *
      * @return the first name of the inquirer

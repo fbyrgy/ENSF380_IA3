@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 /**
  * This class contains unit tests for the ReliefService class.
  */
@@ -174,17 +176,6 @@ public class ReliefServiceTest {
         assertEquals("Log details should match the expected format", expectedLogDetails, reliefService.getLogDetails());
     }
 
-
-    /**
-     * Test for the searchName method of ReliefService.
-     * It checks if the search returns true for a given search query.
-     */
-    // @Test
-    // public void testSearchName() {
-    //     String searchQuery = "Joh";
-    //     assertTrue("Search should return true", searchName(testLocation, searchQuery));
-    // }
-
     /**
      * Test for the inquirerExists method of ReliefService.
      * It checks if the inquirer exists in the inquirerList.
@@ -196,4 +187,57 @@ public class ReliefServiceTest {
         reliefService.setInquirer(inquirer2);
         assertTrue("Inquirer should exist", reliefService.inquirerExists(inquirer));
     }
+
+    @Test
+    public void testGetLocations() {
+
+    // Create some Locations
+    Location location1 = new Location("Location1", "Address1");
+    Location location2 = new Location("Location2", "Address2");
+
+    // Add the Locations to the ReliefService
+    reliefService.addLocation(location1);
+    reliefService.addLocation(location2);
+
+    // Check that getLocations returns the correct list of Locations
+    ArrayList<Location> expectedLocations = new ArrayList<>();
+    expectedLocations.add(location1);
+    expectedLocations.add(location2);
+    assertEquals("getLocations should return the correct list of Locations", expectedLocations, reliefService.getLocations());
+    }   
+
+    @Test
+    public void testAddLocation() {
+
+
+        Location location = new Location("Location1", "Address1");
+
+        // Add the Location to the ReliefService
+        reliefService.addLocation(location);
+
+        // Check that the Location was added to the ReliefService
+        assertTrue("addLocation should add the Location to the ReliefService", reliefService.getLocations().contains(location));
+    }
+
+    @Test
+    public void testGetLocationFromID() {
+
+
+        Location location = new Location("Location1", "Address1");
+
+        // Add the Location to the ReliefService
+        reliefService.addLocation(location);
+
+        // Check that getLocationFromID returns the correct Location
+        assertEquals("getLocationFromID should return the correct Location", location, ReliefService.getLocationFromID(location.getLocationID()));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testGetLocationFromIDInvalid() {
+
+        // Check that getLocationFromID throws an IllegalArgumentException for an invalid location ID
+        ReliefService.getLocationFromID(99999);
+    }
+
+
 }

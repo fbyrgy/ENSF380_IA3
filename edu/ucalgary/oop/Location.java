@@ -16,6 +16,8 @@ public class Location {
     private String address;
     private ArrayList<DisasterVictim> occupants = new ArrayList<>(); 
     private ArrayList<Supply> supplies = new ArrayList<>(); 
+    private static int counter = 0;
+    private final int LOCATION_ID;
 
     /**
      * Constructs a Location object with the specified name and address.
@@ -26,6 +28,26 @@ public class Location {
     public Location(String name, String address) {
         this.name = name;
         this.address = address;
+        LOCATION_ID = generateLocationID();
+    }
+
+    /**
+     * Generates a unique location ID.
+     *
+     * @return The generated location ID.
+     */
+    private static int generateLocationID() {
+        counter++;
+        return counter;
+    }
+
+    /**
+     * Returns the ID of the location.
+     *
+     * @return the ID of the location
+     */
+    public int getLocationID() {
+        return LOCATION_ID;
     }
 
     /**
@@ -153,5 +175,21 @@ public class Location {
             }
         }
 
+    }
+
+    /**
+     * Returns the disaster victim with the given social ID.
+     *
+     * @param socialID the socialID to check for
+     * @return the disaster victim with the given social ID
+     * @throws IllegalArgumentException if the social ID does not match any disaster victim
+     */
+    public DisasterVictim getDisasterVictimFromID(int socialID) {
+        for (DisasterVictim victim : occupants) {
+            if (victim.getAssignedSocialID() == socialID) {
+                return victim;
+            }
+        }
+        throw new IllegalArgumentException("Social ID does not match any disaster victim");
     }
 }
