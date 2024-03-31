@@ -203,7 +203,7 @@ public class ReliefServiceTest {
     ArrayList<Location> expectedLocations = new ArrayList<>();
     expectedLocations.add(location1);
     expectedLocations.add(location2);
-    assertEquals("getLocations should return the correct list of Locations", expectedLocations, reliefService.getLocations());
+    assertEquals("getLocations should return the correct list of Locations", expectedLocations, ReliefService.getLocations());
     }   
 
     @Test
@@ -216,7 +216,7 @@ public class ReliefServiceTest {
         reliefService.addLocation(location);
 
         // Check that the Location was added to the ReliefService
-        assertTrue("addLocation should add the Location to the ReliefService", reliefService.getLocations().contains(location));
+        assertTrue("addLocation should add the Location to the ReliefService", ReliefService.getLocations().contains(location));
     }
 
     @Test
