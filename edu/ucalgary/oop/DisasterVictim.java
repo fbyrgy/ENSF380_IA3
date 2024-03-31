@@ -357,6 +357,10 @@ public class DisasterVictim extends Person implements Names{
         return gender;
     }
 
+    public static Set<String> getGenderOptions() {
+        return GENDER_OPTIONS;
+    }
+
     /**
      * Sets the gender of the victim.
      * @param gender the gender to set, must be one of the options specified in the "GenderOptions.txt" file

@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.HashSet;
 
 
 /**
@@ -170,6 +172,18 @@ public class DisasterVictimTest {
     public void testSetGenderWithInvalidGender() {
         String invalidGender = "pineapple";
         victim.setGender(invalidGender);
+    }
+
+    /**
+     * Test case for getGenderOptions
+     * This test case is based off of the given "GenderOptions.txt" file. If the contents of the file change, this test case will need to be updated.
+     * 
+     */
+    @Test
+    public void testGetGenderOptions() {
+        Set<String> expectedOptions = new HashSet<>(Arrays.asList("woman", "two-spirit", "gender queer", "man", "non-binary", "girl", "boy"));
+        Set<String> actualOptions = DisasterVictim.getGenderOptions();
+        assertEquals("The gender options in the file should match the expected options",expectedOptions, actualOptions);
     }
 
     /**
