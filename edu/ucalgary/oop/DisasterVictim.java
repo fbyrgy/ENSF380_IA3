@@ -65,13 +65,20 @@ public class DisasterVictim extends Person implements Names {
      * 
      * @param firstName  the first name of the victim
      * @param ENTRY_DATE the entry date of the victim in the format "YYYY-MM-DD"
-     * @throws IllegalArgumentException if the entry date has an invalid format
+     * @throws IllegalArgumentException if the entry date has an invalid format or is in the future or if the year is before 2020
      */
     public DisasterVictim(String firstName, String ENTRY_DATE) {
         super(firstName); // Add constructor call to the superclass Person with the firstName argument
         this.firstName = firstName;
         if (!isValidDateFormat(ENTRY_DATE)) {
             throw new IllegalArgumentException("Invalid date format for entry date. Expected format: YYYY-MM-DD");
+        }
+        LocalDate entryDate = LocalDate.parse(ENTRY_DATE, DateTimeFormatter.ISO_LOCAL_DATE);
+        if (entryDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Entry date cannot be in the future");
+        }
+        if (entryDate.getYear() < 2020) {
+            throw new IllegalArgumentException("Entry date cannot be before 2020");
         }
         this.ENTRY_DATE = ENTRY_DATE;
         this.ASSIGNED_SOCIAL_ID = generateSocialID();
@@ -84,13 +91,20 @@ public class DisasterVictim extends Person implements Names {
      * @param firstName  the first name of the victim
      * @param ENTRY_DATE the entry date of the victim in the format "YYYY-MM-DD"
      * @param location   the location of the victim
-     * @throws IllegalArgumentException if the entry date has an invalid format
+     * @throws IllegalArgumentException if the entry date has an invalid format or is in the future or if the year is before 2020
      */
     public DisasterVictim(String firstName, String ENTRY_DATE, Location location) {
         super(firstName); // Add constructor call to the superclass Person with the firstName argument
         this.firstName = firstName;
         if (!isValidDateFormat(ENTRY_DATE)) {
             throw new IllegalArgumentException("Invalid date format for entry date. Expected format: YYYY-MM-DD");
+        }
+        LocalDate entryDate = LocalDate.parse(ENTRY_DATE, DateTimeFormatter.ISO_LOCAL_DATE);
+        if (entryDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Entry date cannot be in the future");
+        }
+        if (entryDate.getYear() < 2020) {
+            throw new IllegalArgumentException("Entry date cannot be before 2020");
         }
         this.ENTRY_DATE = ENTRY_DATE;
         this.ASSIGNED_SOCIAL_ID = generateSocialID();
@@ -452,6 +466,7 @@ public class DisasterVictim extends Person implements Names {
      */
     public void setLocation(Location location) {
         this.location = location;
+        location.addOccupant(this); // Add the DisasterVictim to the location's occupants
     }
 
     /**

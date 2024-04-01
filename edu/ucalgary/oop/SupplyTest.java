@@ -39,6 +39,23 @@ public class SupplyTest {
     }
 
     /**
+     * Test case for verifying that the capitalizeFirstChar() method correctly capitalizes the first character of a string.
+     */
+    @Test
+    public void testCapitalizeFirstChar() {
+        assertEquals("capitalizeFirstChar should capitalize the first character of a string", "Water", Supply.capitalizeFirstChar("water"));
+    }
+
+    /**
+     * Test case for verifying that the type of a supply uses the correct capitalization.
+     */
+    @Test
+    public void testTypeCapitalization() {
+        Supply supply = new Supply("blANKet", 5);
+        assertEquals("The type of a supply should be capitalized", "Blanket", supply.getType());
+    }
+
+    /**
      * Test case for verifying that the getType() method correctly returns the actual Supply type.
      * 
      */

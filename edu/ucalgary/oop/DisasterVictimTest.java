@@ -71,6 +71,26 @@ public class DisasterVictimTest {
     }
 
     /**
+     * Test case for the constructor with a date in the future.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorWithFutureEntryDate() {
+        String futureEntryDate = "2040-01-18"; // Future date
+        new DisasterVictim("Freda", futureEntryDate);
+        // Expecting IllegalArgumentException due to future date
+    }
+
+    /**
+     * Test case for the constructor with a date too far in the past
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorWithPastEntryDate() {
+        String pastEntryDate = "2019-01-18"; // Past date
+        new DisasterVictim("Freda", pastEntryDate);
+        // Expecting IllegalArgumentException due to past date
+    }
+
+    /**
      * Test case for the setDateOfBirth method with a valid date.
      */
     @Test

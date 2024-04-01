@@ -24,8 +24,21 @@ public class Supply {
         if (quantity < 0) {
             throw new IllegalArgumentException("The quantity of a supply cannot be negative.");
         }
-        this.type = type;
+        this.type = capitalizeFirstChar(type);
         this.quantity = quantity;
+    }
+
+    /**
+     * Capitalizes the first character of a given string and converts the rest of the characters to lowercase.
+     *
+     * @param str the string to be capitalized
+     * @return the capitalized string
+     */
+    public static String capitalizeFirstChar(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return Character.toUpperCase(str.charAt(0)) + str.substring(1).toLowerCase();
     }
 
     /**

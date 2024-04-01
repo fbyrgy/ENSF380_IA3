@@ -6,22 +6,22 @@
  * @since 2024-03-31
  */
 
-
 package edu.ucalgary.oop;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+@SuppressWarnings("resource")
 public class UserInterface {
 
     /**
      * Prompts the user to enter an integer input.
      * 
-     * @param prompt the message to display to the user
      * @return the integer input
      */
     public static int getIntegerInput() {
+        
         Scanner scanner = new Scanner(System.in);
         while (!scanner.hasNextInt()) {
             System.out.println("Please enter a valid integer");
@@ -39,6 +39,7 @@ public class UserInterface {
       */
      public static DisasterVictim enterDisasterVictim(int locationID) {
          Scanner scanner = new Scanner(System.in);
+         DisasterVictim victim = null;
  
          System.out.println("Please enter the first name of the disaster victim:");
          String firstName = scanner.nextLine();
@@ -47,19 +48,21 @@ public class UserInterface {
          boolean validDate = false;
  
          while (!validDate) {
-             System.out.println(
-                     "Please enter the entry date of the disaster victim in the format 'YYYY-MM-DD', or enter '-1' to use the current date:");
+             System.out.println("Please enter the entry date of the disaster victim in the format 'YYYY-MM-DD', or enter '-1' to use the current date:");
              entryDate = scanner.nextLine();
  
              if (entryDate.equals("-1")) {
                  entryDate = LocalDate.now().toString();
                  validDate = true;
-             } else if (ReliefService.isValidDateFormat(entryDate)) {
-                 validDate = true;
-             } else {
-                 System.out.println("Invalid date format. Please try again.");
              }
-         }
+             try {
+                victim = new DisasterVictim(firstName, entryDate);
+                validDate = true;
+             } catch (IllegalArgumentException e) {
+                 System.out.println(e.getMessage() + ". Please try again");
+                }
+            }
+        
          
         Location location = null;
         while (location == null) {
@@ -75,7 +78,7 @@ public class UserInterface {
                 locationID = -1;
             }
         }
-         DisasterVictim victim = new DisasterVictim(firstName, entryDate, location);
+         victim.setLocation(location);
 
          return victim;
      }
@@ -153,15 +156,23 @@ public class UserInterface {
 
                             case 1:
                                 // Editing first name
-                                System.out.println("Please enter the new first name of the disaster victim:");
+                                System.out.println("Please enter the new first name of the disaster victim (or enter '-1' to go back):");
                                 String newFirstName = scanner.nextLine();
+                                if (newFirstName.equals("-1")) {
+                                    System.out.println("First name change cancelled. Going back");
+                                    break;
+                                }
                                 victim.setFirstName(newFirstName);
                                 System.out.println("The first name of: " + victim.getAssignedSocialID() + " has been updated to: " + victim.getFirstName());
                                 break;
                             case 2:
                                 // Editing last name
-                                System.out.println("Please enter the new last name of the disaster victim:");
+                                System.out.println("Please enter the new last name of the disaster victim (or enter '-1' to go back):");
                                 String newLastName = scanner.nextLine();
+                                if (newLastName.equals("-1")) {
+                                    System.out.println("Last name change cancelled. Going back");
+                                    break;
+                                }
                                 victim.setLastName(newLastName);
                                 System.out.println("The last name of: " + victim.getFirstName() + " has been updated to: " + victim.getLastName());
                                 break;
@@ -169,8 +180,12 @@ public class UserInterface {
                                 // Editing date of birth
                                 boolean validDateOfBirth = false;
                                 while (!validDateOfBirth) {
-                                    System.out.println("Please enter the new date of birth of the disaster victim in the format 'YYYY-MM-DD':");
+                                    System.out.println("Please enter the new date of birth of the disaster victim in the format 'YYYY-MM-DD' (or enter '-1' to go back):");
                                     String newDateOfBirth = scanner.nextLine();
+                                    if (newDateOfBirth.equals("-1")) {
+                                        System.out.println("Date of birth change cancelled. Going back");
+                                        break;
+                                    }
                                     try {
                                         victim.setDateOfBirth(newDateOfBirth);
                                         validDateOfBirth = true;
@@ -188,8 +203,12 @@ public class UserInterface {
                             case 4:
                                 // Editing approximate age
                                 boolean noError = true;
-                                System.out.println("Please enter the new approximate age of the disaster victim:");
+                                System.out.println("Please enter the new approximate age of the disaster victim (or enter '-1' to go back):");
                                 int newAge = getIntegerInput();
+                                if (newAge == -1) {
+                                    System.out.println("Approximate age change cancelled. Going back");
+                                    break;
+                                }
                                 try{
                                     victim.setApproximateAge(newAge);
                                 } catch (IllegalStateException e) {
@@ -207,22 +226,25 @@ public class UserInterface {
                                 break;
                             case 5:
                                 // Editing gender
-                                System.out.println("Please enter the new gender of the disaster victim");
-                                System.out.println("The valid genders are:" + DisasterVictim.getGenderOptions());
-                                String newGender = scanner.nextLine();
                                 boolean validGender = false;
                                 while (!validGender) {
                                     try {
-                                        System.out.println("Please enter the new gender of the disaster victim");
+                                        System.out.println("Please enter the new gender of the disaster victim (or enter '-1' to go back)");
                                         System.out.println("The valid genders are:" + DisasterVictim.getGenderOptions());
+                                        String newGender = scanner.nextLine();
+                                        if (newGender.equals("-1")) {
+                                            System.out.println("Going back");
+                                            break;
+                                        }
                                         victim.setGender(newGender);
                                         validGender = true;
                                     } catch (IllegalArgumentException e) {
-                                        System.out.println("Please try again");
-                                        newGender = scanner.nextLine();
+                                        System.out.println(e.getMessage());
                                     }
                                 }
-                                System.out.println("The gender of: " + victim.getFirstName() + " has been updated to: " + victim.getGender());
+                                if (validGender) {
+                                    System.out.println("The gender of: " + victim.getFirstName() + " has been updated to: " + victim.getGender());
+                                }
                                 break;
                             case 6:
                                 // Editing location
@@ -477,25 +499,30 @@ public class UserInterface {
 
       * @return the new location
       */
-
-     public static Location newLocation() {
-         Scanner scanner = new Scanner(System.in);
-         
- 
-         System.out.println("Please enter the name of the location:");
-         String name = scanner.nextLine();
- 
-         System.out.println("Please enter the address of the location:");
-         String address = scanner.nextLine();
- 
-         Location location = new Location(name, address);
-         ReliefService.getLocations().add(location);
-
-         System.out.println("Added a new location: " + location.getName() + " with address: " + location.getAddress() + " with ID: " + location.getLocationID());
+      public static void newLocation() {
+        Scanner scanner = new Scanner(System.in);
         
-         return location;
-     }
+        System.out.println("Please enter the name of the location (or enter '-1' to go back):");
+        String name = scanner.nextLine();
+        if ("-1".equals(name)) { 
+           System.out.println("No location added");
+           return;
+        }
+    
+        System.out.println("Please enter the address of the location (or enter '-1' to go back):");
+        String address = scanner.nextLine();
+        if ("-1".equals(address)) {
+           System.out.println("No location added"); 
+           return;
+        }
+    
+        Location location = new Location(name, address);
+        ReliefService.addLocation(location);;
+    
+        System.out.println("Added a new location: " + location.getName() + " with address: " + location.getAddress() + " with ID: " + location.getLocationID());
+       
 
+    }
     /**
      * Adds a supply to a specified location.
      * 
@@ -547,7 +574,6 @@ public class UserInterface {
      }
 
      public static void displaySuppliesAtLocation(int locationID) {
-        Scanner scanner = new Scanner(System.in);
         Location location = null;
         while (location == null) {
             if (locationID == -1) {
@@ -737,7 +763,7 @@ public class UserInterface {
                             System.out.println("Please enter a location ID from the following to access:");
                             ReliefService.displayLocation();
                             locationID = getIntegerInput();
-                            Location location = ReliefService.getLocationFromID(locationID);
+                            ReliefService.getLocationFromID(locationID);
                             valid = true; // Set valid to true if no exception is thrown
                         } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());

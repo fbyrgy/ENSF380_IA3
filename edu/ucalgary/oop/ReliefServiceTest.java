@@ -196,8 +196,8 @@ public class ReliefServiceTest {
     Location location2 = new Location("Location2", "Address2");
 
     // Add the Locations to the ReliefService
-    reliefService.addLocation(location1);
-    reliefService.addLocation(location2);
+    ReliefService.addLocation(location1);
+    ReliefService.addLocation(location2);
 
     // Check that getLocations returns the correct list of Locations
     ArrayList<Location> expectedLocations = new ArrayList<>();
@@ -213,7 +213,7 @@ public class ReliefServiceTest {
         Location location = new Location("Location1", "Address1");
 
         // Add the Location to the ReliefService
-        reliefService.addLocation(location);
+        ReliefService.addLocation(location);
 
         // Check that the Location was added to the ReliefService
         assertTrue("addLocation should add the Location to the ReliefService", ReliefService.getLocations().contains(location));
@@ -226,7 +226,7 @@ public class ReliefServiceTest {
         Location location = new Location("Location1", "Address1");
 
         // Add the Location to the ReliefService
-        reliefService.addLocation(location);
+        ReliefService.addLocation(location);
 
         // Check that getLocationFromID returns the correct Location
         assertEquals("getLocationFromID should return the correct Location", location, ReliefService.getLocationFromID(location.getLocationID()));
