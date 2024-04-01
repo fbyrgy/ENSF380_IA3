@@ -31,6 +31,15 @@ public class FamilyRelationTest {
     public void testObjectCreation() {
         assertNotNull(testFamilyRelationObject);
     }
+
+    /**
+     * Test the constructor of FamilyRelation with the same person.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testObjectCreationWithSamePerson() {
+        DisasterVictim samePerson = new DisasterVictim("Same Person", "2024-03-21");
+        new FamilyRelation(samePerson, relationshipTo, samePerson); 
+    }
 	
     /**
      * Test the setPersonOne and getPersonOne methods of FamilyRelation.

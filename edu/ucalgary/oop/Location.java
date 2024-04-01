@@ -148,7 +148,7 @@ public class Location {
     public void addSupply(Supply supply) {
         boolean found = false;
         for (Supply s : supplies) {
-            if (s.getType() == supply.getType()) {
+            if (s.getType().toLowerCase().equals(supply.getType().toLowerCase())) {
                 s.setQuantity(s.getQuantity() + supply.getQuantity());
                 found = true;
                 break;

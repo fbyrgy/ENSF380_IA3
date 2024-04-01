@@ -271,7 +271,7 @@
             return;
         }
         for (DisasterVictim victim : occupants) {
-            System.out.println("Name: " + victim.getFirstName() + " Social ID: " + victim.getAssignedSocialID() + " Location: " + location.getName());
+            System.out.println("Name: " + victim.getFirstName() + " Location: " + location.getName() + " Social ID: " + victim.getAssignedSocialID());
         }
     }
 

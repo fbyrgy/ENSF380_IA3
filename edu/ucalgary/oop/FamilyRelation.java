@@ -24,8 +24,12 @@ public class FamilyRelation {
      * @param personOne The first disaster victim.
      * @param relationshipTo The relationship between the two disaster victims.
      * @param personTwo The second disaster victim.
+     * @throws IllegalArgumentException If the two disaster victims are the same person.
      */
     public FamilyRelation(DisasterVictim personOne, String relationshipTo, DisasterVictim personTwo) {
+        if (personOne.getAssignedSocialID() == personTwo.getAssignedSocialID()) {
+            throw new IllegalArgumentException("The two disaster victims cannot be the same person.");
+        }
         this.personOne = personOne;
         this.relationshipTo = relationshipTo;
         this.personTwo = personTwo;

@@ -90,6 +90,14 @@ public class DisasterVictimTest {
     }
 
     /**
+     * Test ccase for the setDateOfBirth method with an invalid date.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetDateOfBirthWithInvalidMonth() {
+        victim.setDateOfBirth("2024-20-01"); // This format should cause an exception, since the month is invalid
+    }
+
+    /**
      * Test case for the setFirstName and getFirstName methods.
      */
     @Test
@@ -372,8 +380,19 @@ public class DisasterVictimTest {
                 expectedDietaryRestrictions, victim.getDietaryRestrictions());
     }
 
+
     /**
-     * Test case for the setAge method when date of birth is set.
+     * Test case for addDietaryRestriction with an invalid dietary restriction.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testAddDietaryRestrictionWithInvalidRestriction() {
+        String input = "AAAA"; // Invalid dietary restriction
+        DietaryRestrictions restriction = DietaryRestrictions.valueOf(input);
+        victim.addDietaryRestriction(restriction);
+    }
+
+    /**
+     * Test case for the setApproximateAge method when date of birth is set.
      */
     @Test(expected = IllegalStateException.class)
     public void testSetAgeWithDateOfBirthSet() {
@@ -383,13 +402,29 @@ public class DisasterVictimTest {
     }
 
     /**
-     * Test case for the setAge method when date of birth is not set.
+     * Test case for the setApproximateAge method when date of birth is not set.
      */
     @Test
     public void testSetAgeWithoutDateOfBirthSet() {
         DisasterVictim testVictim = new DisasterVictim("Jane", "2024-01-18");
         testVictim.setApproximateAge(34);
         assertEquals("setAge should correctly set the age", 34, (int) testVictim.getApproximateAge());
+    }
+
+    /**
+     * Test case for the setApproximateAge method with a negative age.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetAgeWithNegativeAge() {
+        victim.setApproximateAge(-1); // Negative age is invalid
+    }
+
+    /**
+     * Test case for the setApproximateAge method with a large age.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetAgeWithLargeAge() {
+        victim.setApproximateAge(151); // Ages over 150 age are invalid
     }
 
     /**

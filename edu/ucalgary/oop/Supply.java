@@ -18,8 +18,12 @@ public class Supply {
      *
      * @param type     the type of the supply
      * @param quantity the quantity of the supply
+     * @throws IllegalArgumentException if the quantity is negative
      */
     public Supply(String type, int quantity) {
+        if (quantity < 0) {
+            throw new IllegalArgumentException("The quantity of a supply cannot be negative.");
+        }
         this.type = type;
         this.quantity = quantity;
     }
