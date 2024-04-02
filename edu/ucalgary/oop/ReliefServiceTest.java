@@ -54,6 +54,24 @@ public class ReliefServiceTest {
     }
 
     /**
+     * Test the default constructor of ReliefService.
+     */
+    @Test
+    public void testDefaultConstructor() {
+        ReliefService defaultReliefService = new ReliefService();
+        assertNotNull("Default ReliefService object should not be null", defaultReliefService);
+    }
+
+    /**
+     * Test the constructor of ReliefService with only an Inquirer object.
+     */
+    @Test
+    public void testConstructorWithInquirer() {
+        ReliefService inquirerReliefService = new ReliefService(inquirer);
+        assertNotNull("ReliefService object with only Inquirer should not be null", inquirerReliefService);
+    }
+
+    /**
      * Test for the getInquirer method of ReliefService.
      * It checks if the returned Inquirer object matches the one set in the setup.
      */

@@ -41,14 +41,12 @@ public class DisasterVictimTest {
     }
 
     /**
-     * Test case for the constructor with a valid date.
+     * Test case for constructor with no location argument
      */
     @Test
-    public void testConstructorWithValidEntryDate() {
-        String validEntryDate = "2024-01-18";
-        DisasterVictim victim = new DisasterVictim("Freda", validEntryDate);
-        assertNotNull("Constructor should successfully create an instance with a valid entry date", victim);
-        assertEquals("Constructor should set the entry date correctly", validEntryDate, victim.getEntryDate());
+    public void testObjectCreationNoLocation() {
+        DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18");
+        assertNotNull(testVictim);
     }
 
     /**
@@ -59,6 +57,19 @@ public class DisasterVictimTest {
         DisasterVictim testVictim = new DisasterVictim("Freda", "2024-01-18", location);
         assertNotNull(testVictim);
     }
+
+    /**
+     * Test case for the constructor with a valid date.
+     */
+    @Test
+    public void testConstructorWithValidEntryDate() {
+        String validEntryDate = "2024-01-18";
+        DisasterVictim victim = new DisasterVictim("Freda", validEntryDate);
+        assertNotNull("Constructor should successfully create an instance with a valid entry date", victim);
+        assertEquals("Constructor should set the entry date correctly", validEntryDate, victim.getEntryDate());
+    }
+
+
 
     /**
      * Test case for the sconstructor with an invalid date.
