@@ -41,28 +41,34 @@ public class UserInterface {
          Scanner scanner = new Scanner(System.in);
          DisasterVictim victim = null;
  
-         System.out.println("Please enter the first name of the disaster victim:");
+         System.out.println("Please enter the first name of the disaster victim (or enter '-1' to go back):");
          String firstName = scanner.nextLine();
- 
+         if (firstName.equals("-1")) {
+             throw new IllegalArgumentException("No disaster victim added");
+         }
          String entryDate = "";
          boolean validDate = false;
  
          while (!validDate) {
-             System.out.println("Please enter the entry date of the disaster victim in the format 'YYYY-MM-DD', or enter '-1' to use the current date:");
+             System.out.println("Please press 'enter' to use the current date or enter the date of entry in the format 'YYYY-MM-DD' (or enter '-1' to go back):");
              entryDate = scanner.nextLine();
  
-             if (entryDate.equals("-1")) {
+             if (entryDate.isEmpty()) {
                  entryDate = LocalDate.now().toString();
+                 System.out.println("Date successfully set");
                  validDate = true;
+             } else if (entryDate.equals("-1")) {
+                 throw new IllegalArgumentException("No disaster victim added");
              }
-             try {
+           
+            try {
                 victim = new DisasterVictim(firstName, entryDate);
                 validDate = true;
-             } catch (IllegalArgumentException e) {
-                 System.out.println(e.getMessage() + ". Please try again");
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage() + ". Please try again");
                 }
-            }
-        
+                
+         }
          
         Location location = null;
         while (location == null) {
@@ -102,7 +108,12 @@ public class UserInterface {
  
                  if (userInput == 1) {
                      // Entering new Disaster Victim
-                     enterDisasterVictim(locationID);
+                     try{
+                        enterDisasterVictim(locationID);
+                     } catch (IllegalArgumentException e) {
+                         System.out.println(e.getMessage());
+                         return;
+                     }
                      System.out.println("Disaster Victim added successfully. You can now edit the disaster victim by pressing '2'.");
                      continue;
  
@@ -111,9 +122,12 @@ public class UserInterface {
                      Location location = null;
                      while (location == null) {
                          if (locationID == -1) {
-                             System.out.println("Please enter the locationID of the location that you would like to access:");
+                             System.out.println("Please enter the locationID of the location that you would like to access (or enter '-1' to go back):");
                              ReliefService.displayLocation();
                              locationID = getIntegerInput();
+                                if (locationID == -1) {
+                                    return; // If the user wants to go back
+                                }
                          }
                          try {
                              location = ReliefService.getLocationFromID(locationID);
@@ -122,12 +136,23 @@ public class UserInterface {
                              locationID = -1;
                          }
                      }
- 
-                     System.out.println("Please enter the social ID of the disaster victim that you would like to edit from the following:");
-                     ReliefService.displayDisasterVictims(locationID);
+                     
+                     DisasterVictim victim = null;
+                     int socialID = 0;
+                        while (victim == null) {
+                            System.out.println("Please enter the social ID of the disaster victim that you would like to edit from the following (or enter '-1' to go back):");
+                            ReliefService.displayDisasterVictims(locationID);
+                            socialID = getIntegerInput();
+                            if (socialID == -1) {
+                                return; // If the user wants to go back
+                            }
+                            try {
+                                victim = location.getDisasterVictimFromID(socialID);
+                            } catch (IllegalArgumentException e) {
+                                System.out.println(e.getMessage());
+                            }
+                        }
 
-                     int socialID = getIntegerInput();
-                     DisasterVictim victim = location.getDisasterVictimFromID(socialID);
                      boolean sameVictim = true;
                      while(sameVictim){
                         System.out.println("Current Disaster Victim: " + victim.getFirstName() +" with social ID: " + victim.getAssignedSocialID());
@@ -141,7 +166,7 @@ public class UserInterface {
                         System.out.println("Please enter '8' if you would like to edit the family connections of the disaster victim");
                         System.out.println("Please enter '9' if you would like to edit the dietary restictions of the disaster victim");
                         System.out.println("Please enter '10' if you would like to edit the supplies of the disaster victim");
-                        System.out.println("Please enter '' to display disaster victim data");
+                        System.out.println("Please enter '' to display all known disaster victim data");
                         System.out.println("Please enter '-1' to go back");
                         int choice = getIntegerInput();
 
@@ -323,72 +348,175 @@ public class UserInterface {
                                     }
                                     System.out.println("Please enter the relationship between the disaster victim and the family member:");
                                     String relationship = scanner.nextLine();
-                                    new FamilyRelation(victim, relationship, personOne);
+                                    try {
+                                        new FamilyRelation(victim, relationship, personOne);
+                                        valid = true;
+                                    } catch (IllegalArgumentException e) {
+                                        System.out.println(e.getMessage());
+                                        continue;
+                                    }
+                                    
                                 }
                                 if(valid){
+                                    victim.ensureRelationshipConsistency();
                                     System.out.println("Family relation added successfully");
                                 }
                                 break;
                             
                             case 9:
                                 // Editing dietary restrictions
-                                boolean validRestriction = false;
+                                int dietaryChoice = 1;
+                                if (!victim.getDietaryRestrictions().isEmpty()) {
+                                    System.out.println("Please enter '1' if you would like to add a dietary restriction");
+                                    System.out.println("Please enter '2' if you would like to remove a dietary restriction");
+                                    System.out.println("Please enter '-1' to go back");
+                                    dietaryChoice = getIntegerInput();
 
-                                while(!validRestriction) {
-                                    System.out.println("Please enter the 4 character code of the dietary restriction you would like to add for the disaster victim from the following (or enter '-1' to go back):");
-                                    System.out.println("AVML - Asian Vegetarian Meal");
-                                    System.out.println("DBML - Diabetic Meal");
-                                    System.out.println("GFML - Gluten Intolerant Meal");
-                                    System.out.println("KSML - Kosher Meal");
-                                    System.out.println("LSML - Low Salt Meal");
-                                    System.out.println("MOML - Muslim Meal");
-                                    System.out.println("PFML - Peanut Free Meal");
-                                    System.out.println("VGML - Vegan Meal");
-                                    System.out.println("VJML - Vegetarian Jain Meal");
-                                    String dietaryRestrictions = scanner.nextLine().toUpperCase();
-                                    if (dietaryRestrictions.equals("-1")) {
+                                }
+
+                                switch (dietaryChoice) {
+
+                                    case 1:    
+                                        // Adding dietary restriction
+                                        boolean validRestriction = false;
+
+                                        while(!validRestriction) {
+                                            System.out.println("Please enter the 4 character code of the dietary restriction you would like to add for the disaster victim from the following (or enter '-1' to go back):");
+                                            System.out.println("AVML - Asian Vegetarian Meal");
+                                            System.out.println("DBML - Diabetic Meal");
+                                            System.out.println("GFML - Gluten Intolerant Meal");
+                                            System.out.println("KSML - Kosher Meal");
+                                            System.out.println("LSML - Low Salt Meal");
+                                            System.out.println("MOML - Muslim Meal");
+                                            System.out.println("PFML - Peanut Free Meal");
+                                            System.out.println("VGML - Vegan Meal");
+                                            System.out.println("VJML - Vegetarian Jain Meal");
+                                            String dietaryRestrictions = scanner.nextLine().toUpperCase();
+                                            if (dietaryRestrictions.equals("-1")) {
+                                                break;
+                                            }
+                                            try {
+                                                DietaryRestrictions restriction = DietaryRestrictions.valueOf(dietaryRestrictions);
+                                                victim.addDietaryRestriction(restriction);
+                                                validRestriction = true;
+                                            } catch (IllegalArgumentException e) {
+                                                System.out.println("Invalid dietary restriction code. Please try again.");
+                                            }
+                                        }
+                                        if (validRestriction) {
+                                            System.out.println("Dietary restriction added successfully");
+                                        }
                                         break;
-                                    }
-                                    try {
-                                        DietaryRestrictions restriction = DietaryRestrictions.valueOf(dietaryRestrictions);
-                                        victim.addDietaryRestriction(restriction);
-                                        validRestriction = true;
-                                    } catch (IllegalArgumentException e) {
-                                        System.out.println("Invalid dietary restriction code. Please try again.");
-                                    }
+
+                                    case 2:
+                                        // Removing dietary restriction
+                                        boolean validRemoval = false;
+
+                                        while(!validRemoval) {
+                                            System.out.println("Please enter the 4 character code of the dietary restriction you would like to remove for the disaster victim from the following (or enter '-1' to go back):");
+                                            for (DietaryRestrictions restriction : victim.getDietaryRestrictions()) {
+                                                System.out.println(restriction);
+                                            }
+                                            String dietaryRestrictions = scanner.nextLine().toUpperCase();
+                                            if (dietaryRestrictions.equals("-1")) {
+                                                break;
+                                            }
+                                            try {
+                                                DietaryRestrictions restriction = DietaryRestrictions.valueOf(dietaryRestrictions);
+                                                victim.removeDietaryRestriction(restriction);
+                                                validRemoval = true;
+                                            } catch (IllegalArgumentException e) {
+                                                System.out.println("Invalid dietary restriction code. Please try again.");
+                                            }
+                                        }
+                                        if (validRemoval) {
+                                            System.out.println("Dietary restriction removed successfully");
+                                        }
+
+                                    
+                                    case -1:
+                                        break;
+                                    
+
+                                    default:
+                                        System.out.println("Invalid choice");
+                                        break;
                                 }
-                                if (validRestriction) {
-                                    System.out.println("Dietary restriction added successfully");
-                                }
-                                break;
-                            
+                                
+                                    
+                                    break;
+
                             case 10:
                                 // Editing supplies
-                                boolean validSupply = false;
-                                while(!validSupply) {
-                                    System.out.println("Please enter the type of the supply that you would like to add for the disaster victim (or enter '-1' to go back):");
-                                    String supplyType = scanner.nextLine();
-                                    if (supplyType.equals("-1")) {
-                                        break;
-                                    }
-                                    System.out.println("Please enter the quantity of the supply that you would like to add for the disaster victim (or enter '-1' to go back):");
-                                    int supplyQuantity = getIntegerInput();
-
-                                    if (supplyQuantity == -1) {
-                                        break;
-                                    }
-                                    try {
-                                        Supply supply = new Supply(supplyType, supplyQuantity);
-                                        victim.addPersonalBelonging(supply);
-                                        validSupply = true;
-                                    } catch (IllegalArgumentException e) {
-                                        System.out.println(e.getMessage());
-                                    }
+                                int supplyChoice = 1;
+                                if (!victim.getPersonalBelongings().isEmpty()) {
+                                    System.out.println("Please enter '1' if you would like to add a supply");
+                                    System.out.println("Please enter '2' if you would like to remove a supply");
+                                    System.out.println("Please enter '-1' to go back");
+                                    supplyChoice = getIntegerInput();
                                 }
+
+                                switch (supplyChoice) {
+
+                                case 1:
+                                    // Adding supply
+                                    boolean validSupply = false;
+                                    while(!validSupply) {
+                                        System.out.println("Please enter the type of the supply that you would like to add for the disaster victim (or enter '-1' to go back):");
+                                        String supplyType = scanner.nextLine();
+                                        if (supplyType.equals("-1")) {
+                                            break;
+                                        }
+                                        System.out.println("Please enter the quantity of the supply that you would like to add for the disaster victim (or enter '-1' to go back):");
+                                        int supplyQuantity = getIntegerInput();
+                                        if (supplyQuantity == -1) {
+                                            break;
+                                        }
+                                        try {
+                                            Supply supply = new Supply(supplyType, supplyQuantity);
+                                            victim.addPersonalBelonging(supply);
+                                            validSupply = true;
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        }
+                                    }
                                 if (validSupply) {
                                     System.out.println("Supply added successfully");
                                 }
                                 break;
+                            
+                                case 2:
+                                    // Removing supply
+                                    boolean validRemoval = false;
+                                    while(!validRemoval) {
+                                        System.out.println("Here are the current supplies for the disaster victim:");
+                                        for (Supply supply : victim.getPersonalBelongings()) {
+                                            System.out.println("Type: " + supply.getType() + " Quantity: " + supply.getQuantity());
+                                        }
+                                        System.out.println("Please enter the type of the supply you would like to remove (or enter '-1' to go back):");
+                                        String supplyType = scanner.nextLine();
+                                        if (supplyType.equals("-1")) {
+                                            break;
+                                        }
+                                        System.out.println("Please enter the quantity of the supply you would like to remove (or enter '-1' to go back):");
+                                        int supplyQuantity = getIntegerInput();
+                                        if (supplyQuantity == -1) {
+                                            break;
+                                        }
+                                        try {
+                                            Supply supply = new Supply(supplyType, supplyQuantity);
+                                            victim.removePersonalBelonging(supply);
+                                            validRemoval = true;
+                                        } catch (IllegalArgumentException e) {
+                                            System.out.println(e.getMessage());
+                                        }
+                                    }
+                                    if (validRemoval) {
+                                        System.out.println("Supply removed successfully");
+                                    }
+                                    break;
+                            }
+                            break;
                             
                             case 11:
                                 // Displaying disaster victim data
@@ -406,7 +534,10 @@ public class UserInterface {
                  } else if (userInput == -1) {
                      return;
  
+                 } else {
+                     System.out.println("Invalid input. Please try again.");
                  }
+
              }
          }
      }
@@ -424,37 +555,59 @@ public class UserInterface {
          Scanner scanner = new Scanner(System.in);
  
          while (true) {
-             System.out.println("Please enter the first name of the inquirer:");
-             String firstName = scanner.nextLine();
-             System.out.println("Please enter the last name of the inquirer:");
-             String lastName = scanner.nextLine();
-             System.out.println("Please enter the phone number of the inquirer:");
-             String phone = scanner.nextLine();
+            System.out.println("Please enter the first name of the inquirer (or enter '-1' to cancel the inquiry and go back go back):");
+            String firstName = scanner.nextLine();
+            if ("-1".equals(firstName)) {
+                System.out.println("No inquery logged");
+                return;
+            }
+
+            System.out.println("Please enter the last name of the inquirer (or enter '-1' to cancel the inquiry and go back):");
+            String lastName = scanner.nextLine();
+            if ("-1".equals(lastName)) {
+                System.out.println("No inquery logged");
+                return;
+            }
+
+            System.out.println("Please enter the phone number of the inquirer (or enter '-1' to cancel the inquiry and go back):");
+            String phone = scanner.nextLine();
+            if ("-1".equals(phone)) {
+                System.out.println("No inquery logged");
+                return;
+            }
  
-             Inquirer inquirer = new Inquirer(firstName, lastName, phone);
-             ReliefService reliefService = new ReliefService(inquirer);
+            Inquirer inquirer = new Inquirer(firstName, lastName, phone);
+            ReliefService reliefService = new ReliefService(inquirer);
  
-             System.out.println("Enter the name or part of the name to search for:");
-             String query = scanner.nextLine();
-             ArrayList<DisasterVictim> foundVictims = searchForVictim(query);
+            System.out.println("Enter the name or part of the name to search for (or enter '-1' to cancel the inquiry and go back):");
+            String query = scanner.nextLine();
+            if ("-1".equals(query)) {
+                System.out.println("No inquery logged");
+                return;
+            }
+            ArrayList<DisasterVictim> foundVictims = searchForVictim(query);
  
-             if (foundVictims.isEmpty()) {
-                 System.out.println("No victim found with the specified name.");
-             } else {
-                 System.out.println("What is the social ID of the victim you would like to inquire about?");
-                 int socialID = getIntegerInput();
-                 boolean found = false;
-                 for (DisasterVictim victim : foundVictims) {
-                     if (victim.getAssignedSocialID() == socialID) {
-                         found = true;
-                         reliefService.setMissingPerson(victim);
-                         break;
+            if (foundVictims.isEmpty()) {
+                System.out.println("No victim found with the specified name.");
+            } else {
+                System.out.println("Please enter the social ID of the victim that the inquirer would like to inquire about (or enter '-1' to cancel the inquiry and go back):");
+                int socialID = getIntegerInput();
+                if (socialID == -1) {
+                    System.out.println("No inquery logged");
+                    return;
+                }
+                boolean found = false;
+                for (DisasterVictim victim : foundVictims) {
+                    if (victim.getAssignedSocialID() == socialID) {
+                        found = true;
+                        reliefService.setMissingPerson(victim);
+                        break;
                      }
-                 }
-                 if (!found) {
-                     System.out.println("No victim found with the specified social ID. Cancelling inquiry");
-                     return;
-                 }
+                }
+                if (!found) {
+                    System.out.println("No victim found with the specified social ID. Cancelling inquiry");
+                    return;
+                }
              }
  
              System.out.println("Please enter any additional info that the inquirer has provided");
@@ -462,6 +615,7 @@ public class UserInterface {
              String info = scanner.nextLine();
              reliefService.setInfoProvided(info);
              inquirer.addInteraction(info);
+             System.out.println("Inquery logged successfully");
  
              System.out.println("Would you like to log another query? (Y/N)");
              String response = scanner.nextLine();
@@ -641,7 +795,8 @@ public class UserInterface {
         if (!victim.getFamilyConnections().isEmpty()) {
             System.out.println("Family connections:");
             for (FamilyRelation relation : victim.getFamilyConnections()) {
-                System.out.println("Family member: " + relation.getPersonTwo().getFirstName());
+                DisasterVictim otherPerson = (relation.getPersonOne() == victim) ? relation.getPersonTwo() : relation.getPersonOne();
+                System.out.println("Family member: " + otherPerson.getFirstName());
                 System.out.println("Relationship: " + relation.getRelationshipTo());
             }
         }
@@ -832,7 +987,7 @@ public class UserInterface {
                     }
                 }
                 } else {
-                    System.out.println("Invalid mode. Please specify 'central' or 'location' as a command line argument (See README.md).");
+                    System.out.println("Invalid mode. Please specify 'central' or 'location' as a command line argument (See README.pdf)");
                     break;
                 }
          } 

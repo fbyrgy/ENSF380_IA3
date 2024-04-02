@@ -84,4 +84,29 @@ public class FamilyRelationTest {
         assertEquals("relationshipTo should be equal", relationshipOne.getRelationshipTo(), relationshipTwo.getRelationshipTo());
         assertEquals("personTwo should be equal", relationshipOne.getPersonTwo(), relationshipTwo.getPersonTwo());
     }
+
+    /**
+     * Test case for the equals method of the FamilyRelation class.
+     * It checks if two FamilyRelation objects are considered equal when the order of the persons is reversed.
+     */
+    @Test
+    public void testEquals() {
+        FamilyRelation relation1 = new FamilyRelation(personOne, relationshipTo, personTwo);
+        FamilyRelation relation2 = new FamilyRelation(personTwo, relationshipTo, personOne); // The order of the persons is reversed
+        assertTrue("The two relations should be equal", relation1.equals(relation2));
+    }
+
+    /**
+     * Test case for the hash code of the FamilyRelation class.
+     * It checks if two FamilyRelation objects are considered equal when the order of the persons is reversed.
+     */
+    @Test
+    public void testHashCode() {
+        FamilyRelation relation1 = new FamilyRelation(personOne, relationshipTo, personTwo);
+        FamilyRelation relation2 = new FamilyRelation(personTwo, relationshipTo, personOne); // The order of the persons is reversed
+        assertEquals("The two relations should have the same hash code", relation1.hashCode(), relation2.hashCode());
+    }
+
+
+
 }

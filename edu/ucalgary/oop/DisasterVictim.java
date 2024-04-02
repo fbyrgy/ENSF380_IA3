@@ -358,9 +358,44 @@ public class DisasterVictim extends Person implements Names {
      * 
      * @param record the family connection to add
      */
-    public void addFamilyConnection(FamilyRelation record) {
-        familyConnections.add(record);
+    public void addFamilyConnection(FamilyRelation relation) {
+        if (!familyConnections.contains(relation)) {
+            familyConnections.add(relation);
+            DisasterVictim otherPerson = (relation.getPersonOne() == this) ? relation.getPersonTwo() : relation.getPersonOne();
+            if (!otherPerson.getFamilyConnections().contains(relation)) {
+                otherPerson.addFamilyConnection(relation);
+            }
+        }
     }
+
+    /**
+     * Ensures consistency of relationships between disaster victims.
+     */
+    public void ensureRelationshipConsistency() {
+        if (familyConnections.isEmpty()) {
+            return;
+        }
+        ArrayList<DisasterVictim> siblings = new ArrayList<>();
+        for (FamilyRelation relation : familyConnections) {
+            if (!relation.getRelationshipTo().toLowerCase().equals("siblings")) {
+                continue;
+            }
+            DisasterVictim otherPerson = (relation.getPersonOne() == this) ? relation.getPersonTwo() : relation.getPersonOne();
+            siblings.add(otherPerson);
+        }
+        if (siblings.isEmpty()) {
+            return;
+        }
+        for (DisasterVictim sibling : siblings) {
+            for (DisasterVictim otherSibling : siblings) {
+                if (sibling == otherSibling) {
+                    continue;
+                }
+                new FamilyRelation(sibling, "siblings", otherSibling);
+            }
+        }
+    }
+    
 
     /**
      * Adds a medical record to the victim's medical records.
@@ -447,6 +482,9 @@ public class DisasterVictim extends Person implements Names {
             throw new IllegalArgumentException("Invalid dietary restriction. Acceptable values are: "
                     + Arrays.toString(DietaryRestrictions.values()));
         }
+        if (dietaryRestrictions.contains(restriction)) {
+            return;
+        }   
         this.dietaryRestrictions.add(restriction);
     }
 

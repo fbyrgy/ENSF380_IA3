@@ -18,6 +18,7 @@ public class FamilyRelation {
     private String relationshipTo;
     private DisasterVictim personTwo;
 
+
     /**
      * Constructs a FamilyRelation object with the specified disaster victims and relationship.
      *
@@ -90,4 +91,31 @@ public class FamilyRelation {
     public void setPersonTwo(DisasterVictim personTwo) {
         this.personTwo = personTwo;
     }
+
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * 
+     * @param obj the reference object with which to compare
+     * @return true if this object is the same as the obj argument; false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        FamilyRelation that = (FamilyRelation) obj;
+        return (personOne.equals(that.personOne) && personTwo.equals(that.personTwo)) ||
+           (personOne.equals(that.personTwo) && personTwo.equals(that.personOne));
+    }
+
+    /**
+     * Returns the hash code value for this FamilyRelation object.
+     * The hash code is calculated by adding the hash codes of the personOne and personTwo objects.
+     *
+     * @return the hash code value for this FamilyRelation object.
+     */
+    @Override
+    public int hashCode() {
+        return personOne.hashCode() + personTwo.hashCode();
+    }
+    
 }

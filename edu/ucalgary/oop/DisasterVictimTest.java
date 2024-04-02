@@ -236,6 +236,48 @@ public class DisasterVictimTest {
     }
 
     /**
+     * Test case for ensureRelationshipConsistency method. 
+     * Since Peace and Sam are siblings, and Peace and Diamond are siblings, Sam and Diamond should be siblings.
+     */
+    @Test
+    public void testEnsureRelationshipConsistency() {
+        DisasterVictim peace = new DisasterVictim("Peace", "2024-01-01");
+        DisasterVictim sam = new DisasterVictim("Sam", "2024-01-01");
+        DisasterVictim diamond = new DisasterVictim("Diamond", "2024-01-01");
+        new FamilyRelation(peace, "siblings", sam);
+        new FamilyRelation(peace, "siblings", diamond);
+        peace.ensureRelationshipConsistency();
+
+        boolean found1 = false;
+        for (FamilyRelation relation : sam.getFamilyConnections()) {
+            if (relation.getPersonOne().equals(sam) && relation.getPersonTwo().equals(diamond) && relation.getRelationshipTo().equals("siblings")) {
+                found1 = true;
+                break;
+            } 
+            if (relation.getPersonOne().equals(diamond) && relation.getPersonTwo().equals(sam) && relation.getRelationshipTo().equals("siblings")) {
+                found1 = true;
+                break;
+            }
+        }
+
+        boolean found2 = false;
+        for (FamilyRelation relation : diamond.getFamilyConnections()) {
+            if (relation.getPersonOne().equals(sam) && relation.getPersonTwo().equals(diamond) && relation.getRelationshipTo().equals("siblings")) {
+                found2 = true;
+                break;
+            } 
+            if (relation.getPersonOne().equals(diamond) && relation.getPersonTwo().equals(sam) && relation.getRelationshipTo().equals("siblings")) {
+                found2 = true;
+                break;
+            }
+        }
+
+        boolean found = found1 && found2; // Both relationships must be found
+
+        assertTrue("Sam and Diamond should be siblings", found);
+    }
+
+    /**
      * Test case for the addPersonalBelonging method.
      */
     @Test
