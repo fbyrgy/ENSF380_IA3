@@ -56,7 +56,7 @@ public class FamilyRelationTest {
      */
     @Test
     public void testSetAndGetPersonTwo() {
-        DisasterVictim newPersonTwo = new DisasterVictim("Another Person", "2024-04-22");
+        DisasterVictim newPersonTwo = new DisasterVictim("Another Person", "2024-04-01");
         testFamilyRelationObject.setPersonTwo(newPersonTwo);
         assertEquals("setPersonTwo does not update personTwo", newPersonTwo, testFamilyRelationObject.getPersonTwo());
     }

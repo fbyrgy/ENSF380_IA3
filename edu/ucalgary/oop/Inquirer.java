@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Inquirer {
     private final String FIRST_NAME;
-    private final String LAST_NAME;
+    private  String lastName;
     private final String INFO;
     private final String SERVICES_PHONE;
     private ArrayList<String> interactions = new ArrayList<>();
@@ -27,7 +27,7 @@ public class Inquirer {
      */
     public Inquirer(String firstName, String lastName, String phone, String info) {
         this.FIRST_NAME = firstName;
-        this.LAST_NAME = lastName;
+        this.lastName = lastName;
         this.SERVICES_PHONE = phone;
         this.INFO = info;
         
@@ -42,7 +42,7 @@ public class Inquirer {
      */
     public Inquirer(String firstName, String lastName, String phone) {
         this.FIRST_NAME = firstName;
-        this.LAST_NAME = lastName;
+        this.lastName = lastName;
         this.SERVICES_PHONE = phone;
         this.INFO = "";
     }
@@ -59,7 +59,7 @@ public class Inquirer {
      *
      * @return the last name of the inquirer
      */
-    public String getLastName() { return this.LAST_NAME; }
+    public String getLastName() { return this.lastName; }
 
     /**
      * Returns the phone number of the inquirer.

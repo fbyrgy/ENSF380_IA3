@@ -8,9 +8,7 @@
  */
 
 package edu.ucalgary.oop;
-import java.sql.Connection;
 import java.util.ArrayList;
-import java.sql.*;
 
 
 public class Location {
@@ -195,8 +193,4 @@ public class Location {
         throw new IllegalArgumentException("Social ID does not match any disaster victim");
     }
 
-    public void databaseConnection() throws SQLException {
-        // Code to connect to the database
-        Connection myConnect = DriverManager.getConnection("url", "oop", "ucalgary");
-    }
 }

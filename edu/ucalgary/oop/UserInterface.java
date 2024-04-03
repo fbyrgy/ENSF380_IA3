@@ -9,11 +9,16 @@
 package edu.ucalgary.oop;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.sql.*;
 
 @SuppressWarnings("resource")
 public class UserInterface {
+
+    // Seting up the database connection
+    private static DatabaseConnection connection = new DatabaseConnection();
 
     /**
      * Prompts the user to enter an integer input.
@@ -727,6 +732,13 @@ public class UserInterface {
             System.out.println("Supply added successfully");
      }
 
+
+
+    /**
+     * Displays the supplies at a given location.
+     * 
+     * @param locationID the ID of the location to display supplies for
+     */
      public static void displaySuppliesAtLocation(int locationID) {
         Location location = null;
         while (location == null) {
@@ -754,6 +766,12 @@ public class UserInterface {
         }
     }
 
+    /**
+     * Displays the data of a disaster victim based on the given location ID and social ID.
+     * 
+     * @param locationID the ID of the location where the victim is located
+     * @param socialID the social ID of the victim
+     */
     public static void displayDisasterVictimData(int locationID, int socialID) {
         Location location = ReliefService.getLocationFromID(locationID);
         DisasterVictim victim = location.getDisasterVictimFromID(socialID);
@@ -821,7 +839,133 @@ public class UserInterface {
     }
 
 
+    public static void accessDatabase() {
+        Scanner scanner = new Scanner(System.in);
+
+        try{
+            connection.createConnection();
+        } catch (SQLException e) {
+            System.out.println("CRITICAL ERROR: Could not connect to the database. Please see README.pdf for instructions on how to set up the database. Exiting...");
+            return;
+        }
+        boolean connected = true;
+        
+        while (connected) {
+        
+            System.out.println("Please enter '1' to display all inquirers in the database");
+            System.out.println("Please enter '2' to display all interactions (inquiry logs) in the database");
+            System.out.println("Please enter '3' to add a new inqurier to the database");
+            System.out.println("Please enter '4' to add a new interaction to the database");
+            System.out.println("Please enter '-1' to exit the database");
+            int choice = getIntegerInput();
+
+            switch(choice) {
+
+                case 1:
+                    // Displaying all inquirers in the database
+                    connection.displayInquirers();
+                    break;
+                
+                case 2:
+                    // Displaying all interactions in the database
+                    connection.displayInteractions();
+                    break;
+
+                case 3:
+                    // Adding a new inquirer to the database
+                    System.out.println("Please enter the first name of the inquirer (or enter '-1' to go back):");
+                    String firstName = scanner.nextLine();
+                    if (firstName.equals("-1")) {
+                        break;
+                    }
+
+                    System.out.println("Please enter the last name of the inquirer (or enter '-1' to go back):");
+                    String lastName = scanner.nextLine();
+                    if (lastName.equals("-1")) {
+                        break;
+                    }
+
+                    System.out.println("Please enter the phone number of the inquirer (or enter '-1' to go back):");
+                    String phone = scanner.nextLine();
+                    if (phone.equals("-1")) {
+                        break;
+                    }
+
+                    connection.addInquirer(firstName, lastName, phone);
+                    break;
+                
+                case 4:
+                    // Adding an interaction
+                    boolean validID = false;
+                    int inquirerID = -1;
+                    String date = "";
+                    while (!validID) {
+                        System.out.println("Please enter the id of the inquirer (or enter '-1' to go back):");
+                        inquirerID = getIntegerInput();
+                        if (inquirerID == -1) {
+                            break;
+                        }
+                        validID = connection.inquirerExists(inquirerID);
+                        if (!validID) {
+                            System.out.println("Invalid inquirer ID. Please try again.");
+                        }
+                    }
+                    if (!validID) {
+                        break; // breaking out of the case
+                    }
+                    
+                    boolean validDate = false;
+                    while (!validDate) {
+                        System.out.println("Please press 'enter' to use the current date or enter the date of the interaction in the form YYYY-MM-DD (or enter '-1' to go back):");
+                        date = scanner.nextLine();
+                        if (date.isEmpty()) {
+                            date = LocalDate.now().toString();
+                            validDate = true;
+                        } else if (date.equals("-1")) {
+                            break;
+                        } else {
+                            try {
+                                LocalDate parsedDate = LocalDate.parse(date);
+                                LocalDate currentDate = LocalDate.now();
+                                
+                                if (parsedDate.isAfter(currentDate)) {
+                                    System.out.println("Invalid date. Date cannot be in the future. Please try again.");
+                                } else if (parsedDate.getYear() < 2020) {
+                                    System.out.println("Invalid date. Year cannot be before 2020. Please try again.");
+                                } else {
+                                    validDate = true;
+                                }
+                            } catch (DateTimeParseException e) {
+                                System.out.println("Invalid date format. Please try again.");
+                            }
+                        }
+                    }
+                    if (!validDate) {
+                        break; // breaking out of the case
+                    }
+
+                    System.out.println("Please enter the details of the interaction (or enter '-1' to go back):");
+                    String details = scanner.nextLine();
+                    if (details.equals("-1")) {
+                        break;
+                    }
+
+                    connection.addInquiryLog(inquirerID, date, details);
+                    break;
+
+                case -1:
+                    // Exiting
+                    connection.close();
+                    connected = false;
+                    break;
+            }
+        }
+
+    }
+
      public static void main(String[] args) {
+        
+
          Scanner scanner = new Scanner(System.in);
          String mode = args.length > 0 ? args[0] : ""; // The mode is determined from CLI arguments
 
@@ -838,6 +982,7 @@ public class UserInterface {
                     System.out.println("Please enter '5' to display all locations and victims");
                     System.out.println("Please enter '6' to add supplies to a location");
                     System.out.println("Please enter '7' to display supplies at a location");
+                    System.out.println("Please enter '8' to access the database");
                     System.out.println("Please enter '-1' to exit the program");
     
                     int choice = getIntegerInput();
@@ -897,6 +1042,11 @@ public class UserInterface {
                             displaySuppliesAtLocation(-1);
                             break;
 
+                        case 8:
+                            // Accessing the database
+                            accessDatabase();
+                            break;
+
                         default:
                             System.out.println("Invalid choice");
                             break;
@@ -925,6 +1075,7 @@ public class UserInterface {
                         } 
                     }
                 }
+                 
 
                  while(mode.equals("location")){
                     System.out.println("Running in location-based mode");
