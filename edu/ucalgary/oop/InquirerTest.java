@@ -94,4 +94,14 @@ public class InquirerTest {
         assertEquals("getInteractions() should return the inquirer's interactions", expectedInteractions, inquirer.getInteractions());
     }
 
+    /**
+     * Test case for inheritance from the Person class.
+     * It verifies that the Inquirer class correctly inherits from the Person class.
+     * The expected result is that the Inquirer object is an instance of the Person class.
+     */
+    @Test
+    public void testInheritanceFromPerson() {
+        assertTrue("Inquirer should inherit from Person", inquirer instanceof Person);
+    }
+
 }

@@ -1,5 +1,5 @@
 /**
- * Represents a person with a first name, last name, gender, and comments.
+ * Represents a person with a first name and last name
  * 
  * @author Deven Powell
  * @version 1.0
@@ -9,20 +9,17 @@
 package edu.ucalgary.oop;
 
 /**
- * Represents a person with a first name, last name, gender, and comments.
+ * Represents a person with a first name and last name
  */
 public class Person {
     private String firstName;
     private String lastName;
-    private String comments;
+
     
     /**
-     * Constructs a Person object with the specified first name, last name, gender, and comments.
+     * Constructs a Person object with the specified first name
      * 
      * @param firstName the first name of the person
-     * @param lastName the last name of the person
-     * @param gender the gender of the person
-     * @param comments any additional comments about the person
      */
     public Person(String firstName) {
         this.firstName = firstName;
@@ -64,22 +61,5 @@ public class Person {
         this.lastName = lastName;
     }
 
-    /**
-     * Returns the comments about the person.
-     * 
-     * @return the comments about the person
-     */
-    public String getComments() {
-        return comments;
-    }
-
-    /**
-     * Sets the comments about the person.
-     * 
-     * @param comments the comments about the person
-     */
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
     
 }

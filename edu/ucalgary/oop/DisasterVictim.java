@@ -25,7 +25,7 @@ import java.util.Set;
 public class DisasterVictim extends Person implements Names {
     private static int counter = 0;
 
-    private String firstName;
+
     private String lastName;
     private String dateOfBirth;
     private Integer approximateAge;
@@ -69,7 +69,6 @@ public class DisasterVictim extends Person implements Names {
      */
     public DisasterVictim(String firstName, String ENTRY_DATE) {
         super(firstName); // Add constructor call to the superclass Person with the firstName argument
-        this.firstName = firstName;
         if (!isValidDateFormat(ENTRY_DATE)) {
             throw new IllegalArgumentException("Invalid date format for entry date. Expected format: YYYY-MM-DD");
         }
@@ -95,7 +94,6 @@ public class DisasterVictim extends Person implements Names {
      */
     public DisasterVictim(String firstName, String ENTRY_DATE, Location location) {
         super(firstName); // Add constructor call to the superclass Person with the firstName argument
-        this.firstName = firstName;
         if (!isValidDateFormat(ENTRY_DATE)) {
             throw new IllegalArgumentException("Invalid date format for entry date. Expected format: YYYY-MM-DD");
         }
@@ -138,23 +136,6 @@ public class DisasterVictim extends Person implements Names {
         }
     }
 
-    /**
-     * Returns the first name of the victim.
-     * 
-     * @return the first name
-     */
-    public String getFirstName() {
-        return firstName;
-    }
-
-    /**
-     * Sets the first name of the victim.
-     * 
-     * @param firstName the first name to set
-     */
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
 
     /**
      * Returns the last name of the victim.

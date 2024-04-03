@@ -53,16 +53,5 @@ public class PersonTest {
         assertEquals("getLastName should return the correct last name", expectedLastName, person.getLastName());
     }
 
-    /**
-     * Test case for getComments and setComments methods.
-     * Ensures that the getComments method returns the correct comments
-     * and that the setComments method changes the comments correctly.
-     */
-    @Test
-    public void testSetAndGetComments() {
-        String newExpectedComments = "New comments";
-        person.setComments(newExpectedComments);
-        assertEquals("setComments should change comments", newExpectedComments, person.getComments());
-    }
 
 }

@@ -294,8 +294,8 @@ public class DisasterVictimTest {
     @Test
     public void testAddAndGetPersonalBelonging() {
         DisasterVictim testVictim = new DisasterVictim("John", "2024-03-18", location);
-        Supply newSupply = new Supply("Emergency Kit", 5);
-        Supply newSupply2 = new Supply("Emergency Kit", 1);
+        Supply newSupply = new Supply("Water", 5);
+        Supply newSupply2 = new Supply("Water", 1);
         location.addSupply(newSupply);
         testVictim.addPersonalBelonging(newSupply2);
         
@@ -316,7 +316,7 @@ public class DisasterVictimTest {
 
         boolean found = false;
         for (Supply supply : location.getSupplies()) {
-            if (supply.getType().equals("Emergency Kit") && supply.getQuantity() == 4) {
+            if (supply.getType().equals("Emergency kit") && supply.getQuantity() == 4) {
                 // There should be a supply with type "Emergency Kit" and quantity 4
                 found = true;
                 break;

@@ -10,8 +10,8 @@
  package edu.ucalgary.oop;
 import java.util.ArrayList;
 
-public class Inquirer {
-    private final String FIRST_NAME;
+public class Inquirer extends Person{
+
     private  String lastName;
     private final String INFO;
     private final String SERVICES_PHONE;
@@ -26,7 +26,7 @@ public class Inquirer {
      * @param info additional information about the inquirer
      */
     public Inquirer(String firstName, String lastName, String phone, String info) {
-        this.FIRST_NAME = firstName;
+        super(firstName);
         this.lastName = lastName;
         this.SERVICES_PHONE = phone;
         this.INFO = info;
@@ -41,18 +41,12 @@ public class Inquirer {
      * @param phone the phone number of the inquirer
      */
     public Inquirer(String firstName, String lastName, String phone) {
-        this.FIRST_NAME = firstName;
+        super(firstName);
         this.lastName = lastName;
         this.SERVICES_PHONE = phone;
         this.INFO = "";
     }
 
-    /**
-     * Returns the first name of the inquirer.
-     *
-     * @return the first name of the inquirer
-     */
-    public String getFirstName() { return this.FIRST_NAME; }
 
     /**
      * Returns the last name of the inquirer.
