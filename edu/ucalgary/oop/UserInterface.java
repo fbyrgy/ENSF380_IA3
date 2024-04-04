@@ -171,7 +171,7 @@ public class UserInterface {
                         System.out.println("Please enter '8' if you would like to edit the family connections of the disaster victim");
                         System.out.println("Please enter '9' if you would like to edit the dietary restictions of the disaster victim");
                         System.out.println("Please enter '10' if you would like to edit the supplies of the disaster victim");
-                        System.out.println("Please enter '' to display all known disaster victim data");
+                        System.out.println("Please enter '11' to display all known disaster victim data");
                         System.out.println("Please enter '-1' to go back");
                         int choice = getIntegerInput();
 
@@ -312,21 +312,28 @@ public class UserInterface {
 
                                 boolean validDate = false;
                                 String dateOfTreatment;
-
+                                MedicalRecord newMedicalRecords = null;
                                 while (!validDate) {
                                     try {
-                                        System.out.println("Please enter the date of treatment in the form YYYY-MM-DD (or enter '-1' to go back):");
+                                        System.out.println("Please press 'enter' to use the current date or enter the date of treatment in the format 'YYYY-MM-DD' (or enter '-1' to go back):");
                                         dateOfTreatment = scanner.nextLine();
                                         if (dateOfTreatment.equals("-1")) {
                                             System.out.println("Medical record cancelled. Going back");
                                             break;
+                                        } else if (dateOfTreatment.isEmpty()) {
+                                            dateOfTreatment = LocalDate.now().toString();
+                                            System.out.println("Date successfully set");
+                                            newMedicalRecords = new MedicalRecord(location, treatmentDetails, dateOfTreatment);
+                                            validDate = true;
+                                        } else {
+                                            newMedicalRecords = new MedicalRecord(location, treatmentDetails, dateOfTreatment);
+                                            validDate = true;
                                         }
-                                        MedicalRecord newMedicalRecords = new MedicalRecord(location, treatmentDetails, dateOfTreatment);
+                                        
                                         victim.addMedicalRecord(newMedicalRecords);
                                         validDate = true;
                                     } catch (IllegalArgumentException e) {
-                                        System.out.println("Please enter the date of treatment in the form YYYY-MM-DD:");
-                                        dateOfTreatment = scanner.nextLine();
+                                        System.out.println(e.getMessage() + " Please try again");
                                     }
                                 }
                                 if (validDate) {
@@ -337,6 +344,7 @@ public class UserInterface {
                                 // Editing family connections
                                 DisasterVictim personOne;
                                 boolean valid = false;
+                                boolean validRelation = false;
                                 while(!valid){
                                     System.out.println("Please enter the social ID of the family member that you would like to add from the following (or enter '-1' to go back):");
                                     ReliefService.displayLocationsAndVictims();
@@ -351,18 +359,21 @@ public class UserInterface {
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
-                                    System.out.println("Please enter the relationship between the disaster victim and the family member:");
+                                    System.out.println("Please enter the relationship between the disaster victim and the family member (or enter '-1' to go back):");
                                     String relationship = scanner.nextLine();
+                                    if (relationship.equals("-1")) {
+                                        break;
+                                    }
                                     try {
                                         new FamilyRelation(victim, relationship, personOne);
-                                        valid = true;
+                                        validRelation = true;
                                     } catch (IllegalArgumentException e) {
                                         System.out.println(e.getMessage());
                                         continue;
                                     }
                                     
                                 }
-                                if(valid){
+                                if(validRelation){
                                     victim.ensureRelationshipConsistency();
                                     System.out.println("Family relation added successfully");
                                 }
@@ -581,8 +592,10 @@ public class UserInterface {
                 return;
             }
  
-            Inquirer inquirer = new Inquirer(firstName, lastName, phone);
-            ReliefService reliefService = new ReliefService(inquirer);
+            Inquirer inquirer = new Inquirer(firstName, lastName, phone); // Creating a new inquirer
+            // The ReliefService constructor will ensure that multiple interactions will be logged with the same inquirer
+            ReliefService reliefService = new ReliefService(inquirer); 
+            inquirer = reliefService.getInquirer(); // If the inquirer is changed, we need to overwrite the old inquirer
  
             System.out.println("Enter the name or part of the name to search for (or enter '-1' to cancel the inquiry and go back):");
             String query = scanner.nextLine();
@@ -615,9 +628,12 @@ public class UserInterface {
                 }
              }
  
-             System.out.println("Please enter any additional info that the inquirer has provided");
-
+             System.out.println("Please enter any additional info that the inquirer has provided (or enter '-1' to cancel the inquiry and go back):");
              String info = scanner.nextLine();
+            if ("-1".equals(info)) {
+                System.out.println("No inquery logged");
+                return;
+            } 
              reliefService.setInfoProvided(info);
              inquirer.addInteraction(info);
              System.out.println("Inquery logged successfully");
@@ -963,6 +979,8 @@ public class UserInterface {
 
     }
 
+
+
      public static void main(String[] args) {
         
 
@@ -983,6 +1001,7 @@ public class UserInterface {
                     System.out.println("Please enter '6' to add supplies to a location");
                     System.out.println("Please enter '7' to display supplies at a location");
                     System.out.println("Please enter '8' to access the database");
+                    System.out.println("Please enter '9' to display all inquiries");
                     System.out.println("Please enter '-1' to exit the program");
     
                     int choice = getIntegerInput();
@@ -1045,6 +1064,11 @@ public class UserInterface {
                         case 8:
                             // Accessing the database
                             accessDatabase();
+                            break;
+                        
+                        case 9:
+                            // Displaying all inquiries
+                            ReliefService.displayInquirers();
                             break;
 
                         default:

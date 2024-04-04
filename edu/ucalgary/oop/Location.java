@@ -166,7 +166,7 @@ public class Location {
      */
     public void removeSupply(Supply unwantedSupply) {
         for (Supply s : supplies) {
-            if (s.getType() == unwantedSupply.getType()) {
+            if (s.getType().equals(unwantedSupply.getType())) {
                 s.setQuantity(s.getQuantity() - unwantedSupply.getQuantity());
                 if (s.getQuantity() <= 0) {
                     supplies.remove(s);

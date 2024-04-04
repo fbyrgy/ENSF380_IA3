@@ -64,12 +64,38 @@ public class ReliefServiceTest {
 
     /**
      * Test the constructor of ReliefService with only an Inquirer object.
+     * 
      */
     @Test
     public void testConstructorWithInquirer() {
         ReliefService inquirerReliefService = new ReliefService(inquirer);
         assertNotNull("ReliefService object with only Inquirer should not be null", inquirerReliefService);
     }
+    /**
+     * Test the getLocations method. 
+     * The list it returns should contain the two new added locations.
+     * 
+     */
+    @Test
+    public void testGetLocations() {
+
+        // Create some Locations
+        Location location1 = new Location("Location1", "Address1");
+        Location location2 = new Location("Location2", "Address2");
+
+        // Add the Locations to the ReliefService
+        ReliefService.addLocation(location1);
+        ReliefService.addLocation(location2);
+
+        // Check that getLocations returns the correct list of Locations
+        ArrayList<Location> expectedLocations = new ArrayList<>();
+        expectedLocations.add(location1);
+        expectedLocations.add(location2);
+        // The method is static so we cannot see if it equals another list, since other areas may affect it
+        // Instead we confirm that it contains both of the new locations we added.=
+        assertTrue("getLocations should contain location1", ReliefService.getLocations().contains(location1)); 
+        assertTrue("getLocations should contain location1", ReliefService.getLocations().contains(location2));
+    }  
 
     /**
      * Test for the getInquirer method of ReliefService.
@@ -86,9 +112,10 @@ public class ReliefServiceTest {
      */
     @Test
     public void testSetInquirer() {
-        Inquirer newInquirer = new Inquirer("Jane", "Doe", "9876543210", "Looking for friend");
-        reliefService.setInquirer(newInquirer);
-        assertEquals("Inquirer should be set correctly", newInquirer, reliefService.getInquirer());
+        ReliefService rs = new ReliefService();
+        Inquirer newInquirer = new Inquirer("Jane", "Doe", "1", "Looking for friend");
+        rs.setInquirer(newInquirer);
+        assertEquals("Inquirer should be set correctly", newInquirer, rs.getInquirer());
     }
 
 
@@ -105,7 +132,7 @@ public class ReliefServiceTest {
         assertEquals("Inquirer should be set correctly", newInquirer, reliefService.getInquirer());
         
         // Check if the inquirer is added to the inquirerList
-        assertTrue("Inquirer should be added to the inquirerList", reliefService.getInquirerList().contains(newInquirer));
+        assertTrue("Inquirer should be added to the inquirerList", ReliefService.getInquirerList().contains(newInquirer));
     }
 
     /**
@@ -195,35 +222,50 @@ public class ReliefServiceTest {
     }
 
     /**
-     * Test for the inquirerExists method of ReliefService.
-     * It checks if the inquirer exists in the inquirerList.
+     * Test for the findInquirer method of ReliefService.
+     * When a new ReliefService is created, it should check the list of inquirers to see if the inquirer already exists.
+     * If the inquirer already exists, it should use the one that already exists in the list, instead of starting a new log
      */
     @Test
-    public void testInquirerExists() {
-        reliefService.setInquirer(inquirer); 
-        Inquirer inquirer2 = new Inquirer("Sheldon", "Cooper", "44444444444", "Looking for positron");
-        reliefService.setInquirer(inquirer2);
-        assertTrue("Inquirer should exist", reliefService.inquirerExists(inquirer));
+    public void testFindInquirer() {
+        Inquirer person = new Inquirer("John","Doe","1123");
+        Inquirer person2 = new Inquirer("John","Doe","1123"); // Same data as person
+        ReliefService rs = new ReliefService(person);
+        ReliefService rs2 = new ReliefService(person2);
+        assertEquals("rs2 should use the inquirer initialized with rs", person, rs2.getInquirer());
+
     }
 
+    /**
+     * Test that the findInquirer method throws IllegalArgumentException when the inquirer does not exist in the inquirers list
+     * 
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testFindInquirerDifferentData() {
+        Inquirer person = new Inquirer("John","Doe","112");
+        Inquirer person2 = new Inquirer("Jane","Doe","112"); // person2 is not added to the list since we do not create a relief service for it
+        ReliefService rs = new ReliefService(person);
+        rs.findInquirer(person2); // Should throw IllegalArgumentException since person2 is not in the list
+    }
+
+    /**
+     * Test that the findInquirer method uses the correct inquirer when inquirers have different data
+     * 
+     */
     @Test
-    public void testGetLocations() {
-
-    // Create some Locations
-    Location location1 = new Location("Location1", "Address1");
-    Location location2 = new Location("Location2", "Address2");
-
-    // Add the Locations to the ReliefService
-    ReliefService.addLocation(location1);
-    ReliefService.addLocation(location2);
-
-    // Check that getLocations returns the correct list of Locations
-    ArrayList<Location> expectedLocations = new ArrayList<>();
-    expectedLocations.add(location1);
-    expectedLocations.add(location2);
-    assertEquals("getLocations should return the correct list of Locations", expectedLocations, ReliefService.getLocations());
-    }   
-
+    public void testFindInquirerDifferentData2() {
+        Inquirer person = new Inquirer("John","Doe","1124");
+        Inquirer person2 = new Inquirer("Jane","Doe","1124"); // Different name
+        ReliefService rs = new ReliefService(person);
+        ReliefService rs2 = new ReliefService(person2);
+        assertEquals("rs2 should use the inquirer person2", person2, rs2.getInquirer()); // Here, person != person2, so rs2 should use the inquirer its initialized with
+        assertEquals("rs should use the inquirer person", person, rs.getInquirer());
+    }
+ 
+    /**
+     * Test for the addLocation method of ReliefService.
+     * It checks if the location is added to the list of locations.
+     */
     @Test
     public void testAddLocation() {
 
@@ -237,6 +279,10 @@ public class ReliefServiceTest {
         assertTrue("addLocation should add the Location to the ReliefService", ReliefService.getLocations().contains(location));
     }
 
+    /**
+     * Test for the getLocationFromID method of ReliefService.
+     * It should return the Location that corresponds to the given location ID.
+     */
     @Test
     public void testGetLocationFromID() {
 
@@ -250,6 +296,10 @@ public class ReliefServiceTest {
         assertEquals("getLocationFromID should return the correct Location", location, ReliefService.getLocationFromID(location.getLocationID()));
     }
 
+    /**
+     * Test for the getLocationFromID method of ReliefService.
+     * It should throw an IllegalArgumentException when an invalid location ID is provided.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testGetLocationFromIDInvalid() {
 

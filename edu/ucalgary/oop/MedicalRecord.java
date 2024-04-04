@@ -9,6 +9,8 @@ package edu.ucalgary.oop;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 
 
 public class MedicalRecord {
@@ -22,16 +24,14 @@ public class MedicalRecord {
      * @param location         the location where the treatment took place
      * @param treatmentDetails the details of the treatment
      * @param dateOfTreatment  the date of the treatment in the format "YYYY-MM-DD"
-     * @throws IllegalArgumentException if the date of treatment is not in the expected format
+     * @throws IllegalArgumentException if the date of treatment is not in the expected format, or does not fall between 2020 and the current date
      */
     public MedicalRecord(Location location, String treatmentDetails, String dateOfTreatment) throws IllegalArgumentException {
         setLocation(location);
         this.treatmentDetails = treatmentDetails;
 
         // Check if the treatmentDetails string matches the expected date format
-        if (!isValidDateFormat(dateOfTreatment)) {
-            throw new IllegalArgumentException("Invalid date format for treatment details. Expected format: YYYY-MM-DD");
-        }
+        isValidDateFormat(dateOfTreatment);
         this.dateOfTreatment = dateOfTreatment;
     }
 
@@ -86,11 +86,9 @@ public class MedicalRecord {
      * @param dateOfTreatment the date of the treatment in the format "YYYY-MM-DD"
      * @throws IllegalArgumentException if the date of treatment is not in the expected format
      */
-    public void setDateOfTreatment(String dateOfTreatment) throws IllegalArgumentException {
+    public void setDateOfTreatment(String dateOfTreatment) {
         // Check if the date of treatment string matches the expected date format
-        if (!isValidDateFormat(dateOfTreatment)) {
-            throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD");
-        }
+        isValidDateFormat(dateOfTreatment);
         this.dateOfTreatment = dateOfTreatment;
     }
 
@@ -100,12 +98,18 @@ public class MedicalRecord {
      * @param date the date string to be checked
      * @return true if the date string matches the expected format, false otherwise
      */
-    private boolean isValidDateFormat(String date) {
+    private static void isValidDateFormat(String date) {
         try {
-            LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
-            return true;
-        } catch (Exception e) {
-            return false;
+            LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ISO_DATE);
+            LocalDate currentDate = LocalDate.now();
+            LocalDate startOf2020 = LocalDate.of(2020, 1, 1);
+
+            if (parsedDate.isBefore(startOf2020) || parsedDate.isAfter(currentDate)) {
+                throw new IllegalArgumentException("Date must be between 2020 and the current date.");
+            }
+
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Invalid date format. Expected format: YYYY-MM-DD.");
         }
     }
 }

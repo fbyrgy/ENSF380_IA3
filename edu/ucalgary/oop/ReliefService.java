@@ -19,7 +19,7 @@
      private String dateOfInquiry;
      private String infoProvided;
      private Location lastKnownLocation;
-     private ArrayList<Inquirer> inquirerList = new ArrayList<>();
+     private static ArrayList<Inquirer> inquirerList = new ArrayList<>();
      private static ArrayList<Location> locations = new ArrayList<>();
  
      /**
@@ -49,8 +49,7 @@
       *                 inquiry
       */
      public ReliefService(Inquirer inquirer) {
-         this.inquirer = inquirer;
-         inquirerList.add(inquirer);
+         setInquirer(inquirer);
      }
 
      /**
@@ -75,11 +74,11 @@
       * @param inquirer the inquirer to be set
       */
      public void setInquirer(Inquirer inquirer) {
-         if (inquirerExists(inquirer)) {
-             this.inquirer = inquirer;
-         } else {
-             inquirerList.add(inquirer);
-             this.inquirer = inquirer;
+         try {
+            this.inquirer = findInquirer(inquirer);
+            } catch (IllegalArgumentException e) {
+                inquirerList.add(inquirer);
+                this.inquirer = inquirer;
          }
      }
  
@@ -191,26 +190,40 @@
       * 
       * @return a list of inquirers associated with the relief service
       */
-     public ArrayList<Inquirer> getInquirerList() {
+     public static ArrayList<Inquirer> getInquirerList() {
          return inquirerList;
  
      }
+
+    /**
+    * Displays the inquirers in the inquirer list.
+    */
+    public static void displayInquirers() {
+        for(Inquirer inq : inquirerList) {
+            System.out.println("Name: " + inq.getFirstName() + " " + inq.getLastName() + ", Phone: " + inq.getServicesPhoneNum());
+            System.out.println("Interactions: ");
+            for (String interaction : inq.getInteractions()) {
+                System.out.println(interaction);
+            }
+        }
+    }
  
      /**
       * Checks if the specified inquirer exists in the inquirer list.
       * 
       * @param inquirer the inquirer to check
-      * @return true if the inquirer exists in the list, false otherwise
+      * @return the inquirer if it exists in the inquirer list
+      * @throws IllegalArgumentException if the inquirer does not exist
       */
-     public boolean inquirerExists(Inquirer inquirer) {
+     public Inquirer findInquirer(Inquirer inquirer) {
          for (Inquirer existingInquirer : inquirerList) {
              if (existingInquirer.getFirstName().equals(inquirer.getFirstName()) &&
                      existingInquirer.getLastName().equals(inquirer.getLastName()) &&
                      existingInquirer.getServicesPhoneNum().equals(inquirer.getServicesPhoneNum())) {
-                 return true;
+                 return existingInquirer;
              }
          }
-         return false;
+         throw new IllegalArgumentException("Inquirer does not exist in the inquirer list");
      }
  
      /**

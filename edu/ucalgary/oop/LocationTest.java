@@ -107,16 +107,16 @@ public class LocationTest {
     @Test
     public void testAddSupply() {
         Location testLocation = new Location("Shelter A", "1234 Shelter Ave");
-        Supply supply1 = new Supply("Water Bottle", 1);
-        Supply supply2 = new Supply("Water Bottle", 2);
+        Supply supply1 = new Supply("Bandage", 1);
+        Supply supply2 = new Supply("Bandage", 2);
         testLocation.addSupply(supply1);
         testLocation.addSupply(supply2);
-        // There should now be 3 water bottles in the supplies list
+        // There should now be 3 Bandages in the supplies list
     
         boolean found = false;
         for (Supply supply : testLocation.getSupplies()) {
-            if (supply.getType().equals("Water Bottle") && supply.getQuantity() == 3) {
-                // There should be a supply with type "Water Bottle" and quantity 3 
+            if (supply.getType().equals("Bandage") && supply.getQuantity() == 3) {
+                // There should be a supply with type "Bandage" and quantity 3 
                 found = true;
                 break;
             }
@@ -129,15 +129,15 @@ public class LocationTest {
      */
     @Test
     public void testRemoveSupply() {
-        // supply has 10 water bottles
-        location.addSupply(supply); // Ensure the supply is added first
-        Supply supplyToRemove = new Supply("Water Bottle", 7);
+        Supply bandages = new Supply("Bandage", 3);
+        location.addSupply(bandages); // Ensure the supply is added first
+        Supply supplyToRemove = new Supply("Bandage", 1);
         location.removeSupply(supplyToRemove);
         // There should now be 10-3 = 7 water bottles in the supplies list
 
         boolean found = false;
         for (Supply supply : location.getSupplies()) {
-            if (supply.getType().equals("Water Bottle") && supply.getQuantity() == 3) {
+            if (supply.getType().equals("Bandage") && supply.getQuantity() == 2) {
                 // There should be a supply with type "Water Bottle" and quantity 3
                 found = true;
                 break;
