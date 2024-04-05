@@ -51,6 +51,15 @@ public class Supply {
     }
 
     /**
+     * Returns the type of the supply.
+     *
+     * @return the type of the supply
+     */
+    public String getType() {
+        return this.type;
+    }
+
+    /**
      * Sets the quantity of the supply.
      *
      * @param quantity the quantity of the supply
@@ -59,14 +68,6 @@ public class Supply {
         this.quantity = quantity;
     }
 
-    /**
-     * Returns the type of the supply.
-     *
-     * @return the type of the supply
-     */
-    public String getType() {
-        return this.type;
-    }
 
     /**
      * Returns the quantity of the supply.

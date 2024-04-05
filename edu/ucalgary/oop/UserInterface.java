@@ -854,7 +854,11 @@ public class UserInterface {
         }
     }
 
-
+    /**
+     * Method that handles accessing and updating the database.
+     * This method requires a properly setup PostgreSQL database to work. 
+     * See README.pdf for details on how to set up the database.
+     */
     public static void accessDatabase() {
         Scanner scanner = new Scanner(System.in);
 
@@ -980,7 +984,11 @@ public class UserInterface {
     }
 
 
-
+    /**
+     * Main method that runs the application.
+     * 
+     * @param args
+     */
      public static void main(String[] args) {
         
 
