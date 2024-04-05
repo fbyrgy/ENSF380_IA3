@@ -44,7 +44,7 @@ public class DatabaseConnection {
             dbConnect.close();
             System.out.println("Database connection closed");
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error closing database connection. Full details: \n" + e);
         }
     }
 
