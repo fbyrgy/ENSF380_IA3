@@ -261,7 +261,7 @@
          throw new IllegalArgumentException("Location with ID " + locationID + " does not exist.");
      }
 
-         /**
+    /**
     * Displays the locations in the locations list.
     */
     public static void displayLocation() {
@@ -298,6 +298,28 @@
             int locationID = loc.getLocationID();
             displayDisasterVictims(locationID);
         }
+    }
+
+        /**
+      * Searches for a victim by name or part of the name in the locations.
+      * 
+      * @param query the name or part of the name to search for
+      * @return a list of disaster victims that match the given first name.
+      */
+      public static ArrayList<DisasterVictim> searchForVictim(String query) {
+        ArrayList<DisasterVictim> foundVictims = new ArrayList<>();
+        query = query.toLowerCase();
+
+        for (Location loc : getLocations()) {
+            for (DisasterVictim victim : loc.getOccupants()) {
+                if (victim.getFirstName().toLowerCase().contains(query)) {
+                    System.out.println("Found victim: " + victim.getFirstName() + " in location: " + loc.getName() + " with social ID: " + victim.getAssignedSocialID());
+                    foundVictims.add(victim);
+                }
+            }
+        }
+
+        return foundVictims;
     }
 
  }

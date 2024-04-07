@@ -25,8 +25,6 @@ import java.util.Set;
 public class DisasterVictim extends Person implements Names {
     private static int counter = 0;
 
-
-    private String lastName;
     private String dateOfBirth;
     private Integer approximateAge;
     private final int ASSIGNED_SOCIAL_ID;
@@ -136,24 +134,6 @@ public class DisasterVictim extends Person implements Names {
         }
     }
 
-
-    /**
-     * Returns the last name of the victim.
-     * 
-     * @return the last name
-     */
-    public String getLastName() {
-        return lastName;
-    }
-
-    /**
-     * Sets the last name of the victim.
-     * 
-     * @param lastName the last name to set
-     */
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
 
     /**
      * Returns the date of birth of the victim.
@@ -336,6 +316,7 @@ public class DisasterVictim extends Person implements Names {
 
     /**
      * Adds a family connection to the victim's family connections.
+     * Also adds the same connection to the other disaster victim, ensuring a two-sided relationship.
      * 
      * @param record the family connection to add
      */

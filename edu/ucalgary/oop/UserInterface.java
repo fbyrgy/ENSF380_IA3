@@ -119,7 +119,7 @@ public class UserInterface {
                          System.out.println(e.getMessage());
                          return;
                      }
-                     System.out.println("Disaster Victim added successfully. You can now edit the disaster victim by pressing '2'.");
+                     System.out.println("Disaster Victim added successfully. You can now edit the disaster victim by entering '2'");
                      continue;
  
                  } else if (userInput == 2) {
@@ -290,6 +290,8 @@ public class UserInterface {
                                         }
                                         Location newLocation = ReliefService.getLocationFromID(newLocationID);
                                         victim.setLocation(newLocation);
+                                        Location oldLocation = ReliefService.getLocationFromID(locationID);
+                                        oldLocation.removeOccupant(victim); // Removing the victim from the old location
                                         validID = true;
                                     } catch (IllegalArgumentException e) {
                                         System.out.println(e.getMessage());
@@ -342,7 +344,7 @@ public class UserInterface {
                                 break;
                             case 8:
                                 // Editing family connections
-                                DisasterVictim personOne;
+                                DisasterVictim personOne = null;
                                 boolean valid = false;
                                 boolean validRelation = false;
                                 while(!valid){
@@ -352,11 +354,18 @@ public class UserInterface {
                                     if (familyMemberID == -1) {
                                         break;
                                     }
-                                    try {
-                                        personOne = location.getDisasterVictimFromID(familyMemberID);
-                                        valid = true;
-                                    } catch (IllegalArgumentException e) {
-                                        System.out.println(e.getMessage());
+                                    for (Location loc : ReliefService.getLocations()) {
+                                        // Trying to find the disaster victim by going through every location
+                                        try {
+                                            personOne = loc.getDisasterVictimFromID(familyMemberID);
+                                            valid = true;
+                                            break;
+                                        } catch (IllegalArgumentException e) {
+                                            continue;
+                                        }
+                                    }
+                                    if (!valid) {
+                                        System.out.println("Social ID does not match any disaster victim. Please try again");
                                         continue;
                                     }
                                     System.out.println("Please enter the relationship between the disaster victim and the family member (or enter '-1' to go back):");
@@ -514,6 +523,17 @@ public class UserInterface {
                                         if (supplyType.equals("-1")) {
                                             break;
                                         }
+                                        boolean exists = false;
+                                        for (Supply s : victim.getPersonalBelongings()) {
+                                            if (s.getType().toLowerCase().equals(supplyType.toLowerCase())) {
+                                                exists = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!exists) {
+                                            System.out.println("Supply does not exist. Please try again.");
+                                            continue;
+                                        }
                                         System.out.println("Please enter the quantity of the supply you would like to remove (or enter '-1' to go back):");
                                         int supplyQuantity = getIntegerInput();
                                         if (supplyQuantity == -1) {
@@ -531,6 +551,11 @@ public class UserInterface {
                                         System.out.println("Supply removed successfully");
                                     }
                                     break;
+
+                                default:
+                                    System.out.println("Going back");
+                                    break;
+
                             }
                             break;
                             
@@ -603,7 +628,7 @@ public class UserInterface {
                 System.out.println("No inquery logged");
                 return;
             }
-            ArrayList<DisasterVictim> foundVictims = searchForVictim(query);
+            ArrayList<DisasterVictim> foundVictims = ReliefService.searchForVictim(query);
  
             if (foundVictims.isEmpty()) {
                 System.out.println("No victim found with the specified name.");
@@ -647,27 +672,7 @@ public class UserInterface {
          }
      }
  
-     /**
-      * Searches for a victim by name or part of the name in the locations.
-      * 
-      * @param query the name or part of the name to search for
-      * @return a list of disaster victims that match the given first name.
-      */
-     public static ArrayList<DisasterVictim> searchForVictim(String query) {
-         ArrayList<DisasterVictim> foundVictims = new ArrayList<>();
-         query = query.toLowerCase();
- 
-         for (Location loc : ReliefService.getLocations()) {
-             for (DisasterVictim victim : loc.getOccupants()) {
-                 if (victim.getFirstName().toLowerCase().contains(query)) {
-                     System.out.println("Found victim: " + victim.getFirstName() + " in location: " + loc.getName() + " with social ID: " + victim.getAssignedSocialID());
-                     foundVictims.add(victim);
-                 }
-             }
-         }
- 
-         return foundVictims;
-     }
+
 
      /**
       * Creates a new location with the specified name and address.
@@ -708,7 +713,7 @@ public class UserInterface {
             Location location = null;
             while (location == null) {
                 if (locationID == -1) {
-                    System.out.println("Please enter the locationID of the location that you would like to access (or enter '-1' to go back):");
+                    System.out.println("Please enter the locationID of the location that you would like to access from the following (or enter '-1' to go back):");
                     ReliefService.displayLocation();
                     locationID = getIntegerInput();
 
@@ -759,7 +764,7 @@ public class UserInterface {
         Location location = null;
         while (location == null) {
             if (locationID == -1) {
-                System.out.println("Please enter the locationID of the location that you would like to access (or enter '-1' to go back):");
+                System.out.println("Please enter the locationID of the location that you would like to access from the following (or enter '-1' to go back):");
                 ReliefService.displayLocation();
                 locationID = getIntegerInput();
                 if (locationID == -1) {
@@ -987,7 +992,7 @@ public class UserInterface {
     /**
      * Main method that runs the application.
      * 
-     * @param args
+     * @param args the CLI arguments
      */
      public static void main(String[] args) {
         

@@ -26,6 +26,17 @@ public class Person {
     }
 
     /**
+     * Constructs a Person object with the specified first name and last name
+     * 
+     * @param firstName the first name of the person
+     * @param lastName the last name of the person
+     */
+    public Person(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    /**
      * Returns the first name of the person.
      * 
      * @return the first name of the person

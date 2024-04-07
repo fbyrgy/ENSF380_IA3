@@ -307,5 +307,23 @@ public class ReliefServiceTest {
         ReliefService.getLocationFromID(99999);
     }
 
+    /**
+     * Test case for the searchForVictim method in the UserInterface class.
+     * It verifies that the searchForVictim method returns the expected list of victims
+     * when searching for a specific query.
+     */
+    @Test
+    public void testSearchForVictim() {
+        Location location = new Location ("location","address");
+        ReliefService.addLocation(location);
+        DisasterVictim victim = new DisasterVictim("Praveen","2023-01-01",location);
+        DisasterVictim victim2 = new DisasterVictim("Oprah", "2023-01-01", location);
+        String query = "Pra";
+        ArrayList<DisasterVictim> expectedVictims = new ArrayList<>();
+        expectedVictims.add(victim);
+        expectedVictims.add(victim2);
+        assertEquals("The expected results should contain victim and victim2", expectedVictims, ReliefService.searchForVictim(query));
+    }
+
 
 }

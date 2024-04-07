@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 public class PersonTest {
 
     Person person = new Person("John");
+    Person person2 = new Person("Dave","Smith");
 
     /**
      * Test case for object creation.
@@ -27,6 +28,7 @@ public class PersonTest {
     @Test
     public void testObjectCreation() {
         assertNotNull("Person should not be null", person);
+        assertNotNull("Person should not be null", person2);
     }
 
     /**

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Inquirer extends Person{
 
-    private  String lastName;
+
     private final String INFO;
     private final String SERVICES_PHONE;
     private ArrayList<String> interactions = new ArrayList<>();
@@ -26,8 +26,7 @@ public class Inquirer extends Person{
      * @param info additional information about the inquirer
      */
     public Inquirer(String firstName, String lastName, String phone, String info) {
-        super(firstName);
-        this.lastName = lastName;
+        super(firstName, lastName);
         this.SERVICES_PHONE = phone;
         this.INFO = info;
         
@@ -41,19 +40,10 @@ public class Inquirer extends Person{
      * @param phone the phone number of the inquirer
      */
     public Inquirer(String firstName, String lastName, String phone) {
-        super(firstName);
-        this.lastName = lastName;
+        super(firstName, lastName);
         this.SERVICES_PHONE = phone;
         this.INFO = "";
     }
-
-
-    /**
-     * Returns the last name of the inquirer.
-     *
-     * @return the last name of the inquirer
-     */
-    public String getLastName() { return this.lastName; }
 
     /**
      * Returns the phone number of the inquirer.
