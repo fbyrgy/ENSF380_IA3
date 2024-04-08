@@ -1,5 +1,17 @@
+/**
+ * Represents a names interface for the first and last name of the victim.
+ * 
+ * @author Deven Powell
+ * @version 1.0
+ * @since 2024-03-18
+ */
+
 package edu.ucalgary.oop;
 
+/**
+ * Names interface for the first and last name of the victim.
+ *
+ */
 public interface Names {
     
     /**
