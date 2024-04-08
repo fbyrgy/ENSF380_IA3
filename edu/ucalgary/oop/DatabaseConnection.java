@@ -28,7 +28,7 @@ public class DatabaseConnection {
      * @throws SQLException when the connection to the database fails
      */
     public void createConnection() throws SQLException {
-
+        // The SQLException is caught in the user interface
         System.out.println("Connecting to database...");
         dbConnect = DriverManager.getConnection("jdbc:postgresql://localhost/ensf380project", "oop", "ucalgary");
         System.out.println("Database connection successful");
@@ -40,14 +40,18 @@ public class DatabaseConnection {
      */
     public void close() {
         try {
-            results.close();
-            dbConnect.close();
+            if (results != null) {
+                results.close();
+            }
+            if (dbConnect != null) {
+                dbConnect.close();
+            }
             System.out.println("Database connection closed");
         } catch (SQLException e) {
             System.out.println("Error closing database connection. Full details: \n" + e);
         }
     }
-
+    
     /**
      * Displays all inquirers in the database
      * 

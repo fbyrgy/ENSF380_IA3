@@ -1,5 +1,7 @@
 /**
  * The UserInterface class provides a text-based user interface for the ReliefService class.
+ * It allows for the user to create locations, disaster victims, and log inquirer queries.
+ * It also provides a user interface for the database which can be read and updated.
  *
  * @author Deven Powell
  * @version 1.0
@@ -982,6 +984,10 @@ public class UserInterface {
                     // Exiting
                     connection.close();
                     connected = false;
+                    break;
+
+                default:
+                    System.out.println("Invalid choice");
                     break;
             }
         }
