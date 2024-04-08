@@ -133,12 +133,12 @@ public class LocationTest {
         location.addSupply(bandages); // Ensure the supply is added first
         Supply supplyToRemove = new Supply("Bandage", 1);
         location.removeSupply(supplyToRemove);
-        // There should now be 10-3 = 7 water bottles in the supplies list
+        
 
         boolean found = false;
         for (Supply supply : location.getSupplies()) {
             if (supply.getType().equals("Bandage") && supply.getQuantity() == 2) {
-                // There should be a supply with type "Water Bottle" and quantity 3
+                
                 found = true;
                 break;
             }
